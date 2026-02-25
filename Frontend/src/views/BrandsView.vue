@@ -5,8 +5,9 @@
     <!-- ── HERO ── -->
     <section class="brands-hero">
       <div class="hero-bg">
-        <div class="bg-grid"></div>
-        <div class="bg-glow"></div>
+        <div class="bg-petal bp-1"></div>
+        <div class="bg-petal bp-2"></div>
+        <div class="bg-lines"></div>
       </div>
       <div class="brands-hero-inner">
         <span class="page-label">Partners & Products</span>
@@ -48,7 +49,7 @@
     </section>
 
     <!-- ── SCANNERS ── -->
-    <section class="section alt">
+    <section id="scanners" class="section alt">
       <div class="section-inner">
         <div class="section-header">
           <span class="section-label">Our Hardware</span>
@@ -61,22 +62,21 @@
               <div class="scanner-glow" :class="scanner.glowClass"></div>
               <div class="scanner-placeholder">
                 <svg viewBox="0 0 180 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="40" y="20" width="100" height="160" rx="12" fill="rgba(0,85,255,0.06)" stroke="rgba(0,170,255,0.3)" stroke-width="1.5"/>
-                  <rect x="55" y="40" width="70" height="90" rx="6" fill="rgba(0,85,255,0.08)" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
-                  <ellipse cx="90" cy="85" rx="22" ry="28" fill="none" stroke="#00aaff" stroke-width="1" opacity="0.6"/>
-                  <path d="M78 78 L84 84 L90 78" fill="none" stroke="#00aaff" stroke-width="1" opacity="0.7"/>
-                  <path d="M90 78 L96 84 L102 78" fill="none" stroke="#00aaff" stroke-width="1" opacity="0.7"/>
-                  <path d="M82 98 Q90 104 98 98" fill="none" stroke="#00aaff" stroke-width="1.2" opacity="0.8"/>
-                  <path d="M58 43 L58 50 L65 50" stroke="#00aaff" stroke-width="1.5" opacity="0.8"/>
-                  <path d="M122 43 L122 50 L115 50" stroke="#00aaff" stroke-width="1.5" opacity="0.8"/>
-                  <path d="M58 127 L58 120 L65 120" stroke="#00aaff" stroke-width="1.5" opacity="0.8"/>
-                  <path d="M122 127 L122 120 L115 120" stroke="#00aaff" stroke-width="1.5" opacity="0.8"/>
-                  <rect x="70" y="148" width="40" height="5" rx="2.5" fill="rgba(0,85,255,0.3)"/>
-                  <circle cx="90" cy="168" r="8" fill="none" stroke="rgba(0,170,255,0.4)" stroke-width="1.5"/>
-                  <circle cx="90" cy="168" r="3.5" fill="rgba(0,85,255,0.4)"/>
-                  <line x1="58" y1="85" x2="122" y2="85" stroke="#00aaff" stroke-width="0.5" opacity="0.3"/>
-                  <!-- Scan beam animation -->
-                  <line x1="58" y1="85" x2="122" y2="85" stroke="#00aaff" stroke-width="1" opacity="0.5">
+                  <rect x="40" y="20" width="100" height="160" rx="12" fill="rgba(196,120,74,0.06)" stroke="rgba(196,120,74,0.3)" stroke-width="1.5"/>
+                  <rect x="55" y="40" width="70" height="90" rx="6" fill="rgba(196,120,74,0.06)" stroke="rgba(196,120,74,0.2)" stroke-width="1"/>
+                  <ellipse cx="90" cy="85" rx="22" ry="28" fill="none" stroke="#c4784a" stroke-width="1" opacity="0.6"/>
+                  <path d="M78 78 L84 84 L90 78" fill="none" stroke="#c4784a" stroke-width="1" opacity="0.7"/>
+                  <path d="M90 78 L96 84 L102 78" fill="none" stroke="#c4784a" stroke-width="1" opacity="0.7"/>
+                  <path d="M82 98 Q90 104 98 98" fill="none" stroke="#c4784a" stroke-width="1.2" opacity="0.8"/>
+                  <path d="M58 43 L58 50 L65 50" stroke="#c4784a" stroke-width="1.5" opacity="0.8"/>
+                  <path d="M122 43 L122 50 L115 50" stroke="#c4784a" stroke-width="1.5" opacity="0.8"/>
+                  <path d="M58 127 L58 120 L65 120" stroke="#c4784a" stroke-width="1.5" opacity="0.8"/>
+                  <path d="M122 127 L122 120 L115 120" stroke="#c4784a" stroke-width="1.5" opacity="0.8"/>
+                  <rect x="70" y="148" width="40" height="5" rx="2.5" fill="rgba(196,120,74,0.3)"/>
+                  <circle cx="90" cy="168" r="8" fill="none" stroke="rgba(196,120,74,0.4)" stroke-width="1.5"/>
+                  <circle cx="90" cy="168" r="3.5" fill="rgba(196,120,74,0.4)"/>
+                  <line x1="58" y1="85" x2="122" y2="85" stroke="#c4784a" stroke-width="0.5" opacity="0.2"/>
+                  <line x1="58" y1="85" x2="122" y2="85" stroke="#c4784a" stroke-width="1" opacity="0.5">
                     <animate attributeName="y1" values="45;125;45" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="y2" values="45;125;45" dur="3s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite"/>
@@ -116,13 +116,13 @@
             <div class="product-visual">
               <div class="product-glow"></div>
               <svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="35" y="30" width="50" height="100" rx="10" fill="rgba(0,85,255,0.07)" stroke="rgba(0,170,255,0.25)" stroke-width="1.2"/>
-                <rect x="45" y="18" width="30" height="18" rx="6" fill="rgba(0,85,255,0.1)" stroke="rgba(0,170,255,0.2)" stroke-width="1"/>
-                <rect x="43" y="55" width="34" height="5" rx="2.5" fill="rgba(0,170,255,0.35)"/>
-                <rect x="46" y="66" width="28" height="3" rx="1.5" fill="rgba(0,170,255,0.2)"/>
-                <rect x="48" y="74" width="24" height="3" rx="1.5" fill="rgba(0,170,255,0.15)"/>
-                <circle cx="60" cy="100" r="12" fill="none" stroke="rgba(0,85,255,0.3)" stroke-width="1"/>
-                <text x="60" y="104" text-anchor="middle" font-size="8" fill="rgba(0,170,255,0.7)" font-family="monospace" font-weight="bold">FI</text>
+                <rect x="35" y="30" width="50" height="100" rx="10" fill="rgba(196,120,74,0.07)" stroke="rgba(196,120,74,0.25)" stroke-width="1.2"/>
+                <rect x="45" y="18" width="30" height="18" rx="6" fill="rgba(196,120,74,0.1)" stroke="rgba(196,120,74,0.2)" stroke-width="1"/>
+                <rect x="43" y="55" width="34" height="5" rx="2.5" fill="rgba(196,120,74,0.35)"/>
+                <rect x="46" y="66" width="28" height="3" rx="1.5" fill="rgba(196,120,74,0.2)"/>
+                <rect x="48" y="74" width="24" height="3" rx="1.5" fill="rgba(196,120,74,0.15)"/>
+                <circle cx="60" cy="100" r="12" fill="none" stroke="rgba(196,120,74,0.3)" stroke-width="1"/>
+                <text x="60" y="104" text-anchor="middle" font-size="8" fill="rgba(196,120,74,0.7)" font-family="monospace" font-weight="bold">FI</text>
               </svg>
             </div>
             <div class="product-body">
@@ -141,7 +141,7 @@
     <!-- ── CTA ── -->
     <section class="cta-strip">
       <div class="cta-strip-inner">
-        <h2>Find what your<br/><span class="accent">skin actually needs.</span></h2>
+        <h2>Find what your<br/><span class="accent-light">skin actually needs.</span></h2>
         <p>Scan your skin and let Face.IT recommend exactly the right products from our brands and our own range.</p>
         <router-link to="/login" class="cta-btn">Start Your Scan</router-link>
       </div>
@@ -152,8 +152,8 @@
 </template>
 
 <script setup>
-import AppNavbar from '@/components/AppNavbar.vue'
-import AppFooter from '@/components/AppFooter.vue'
+import AppNavbar from '../components/Appnavbar.vue'
+import AppFooter from '../components/Appfooter.vue'
 
 const brands = [
   {
@@ -229,74 +229,81 @@ const ownProducts = [
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
+.page { background: #fdf8f3; min-height: 100vh; color: #2d1f14; }
 
-.page { background: #080b10; min-height: 100vh; color: #e8eaf0; }
-
+/* HERO */
 .brands-hero {
   min-height: 55vh; display: flex; align-items: center;
   position: relative; overflow: hidden; padding: 140px 5% 80px;
 }
 .hero-bg { position: absolute; inset: 0; pointer-events: none; }
-.bg-grid {
+.bg-petal { position: absolute; border-radius: 50%; }
+.bp-1 {
+  width: 700px; height: 700px; top: -200px; right: -150px;
+  background: radial-gradient(circle, rgba(240,213,192,0.55) 0%, transparent 65%);
+  filter: blur(50px);
+}
+.bp-2 {
+  width: 400px; height: 400px; bottom: -100px; left: -80px;
+  background: radial-gradient(circle, rgba(232,200,176,0.4) 0%, transparent 65%);
+  filter: blur(40px);
+}
+.bg-lines {
   position: absolute; inset: 0;
   background-image:
-    linear-gradient(rgba(0,100,255,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,100,255,0.06) 1px, transparent 1px);
+    linear-gradient(rgba(196,120,74,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,120,74,0.04) 1px, transparent 1px);
   background-size: 44px 44px;
-}
-.bg-glow {
-  position: absolute; width: 700px; height: 700px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(0,80,255,0.14) 0%, transparent 70%);
-  top: -200px; right: -80px; filter: blur(60px);
 }
 .brands-hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
 .page-label {
   font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.22em;
-  text-transform: uppercase; color: #0055ff; display: block; margin-bottom: 20px;
+  text-transform: uppercase; color: #c4784a; display: block; margin-bottom: 20px;
 }
 .page-title {
   font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 8vw, 100px);
-  line-height: 0.92; letter-spacing: 0.02em; color: #e8eaf0; margin-bottom: 24px;
+  line-height: 0.92; letter-spacing: 0.02em; color: #2d1f14; margin-bottom: 24px;
 }
-.accent { color: #0055ff; }
+.accent { color: #c4784a; }
 .page-sub {
   font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.9;
-  color: rgba(255,255,255,0.45); max-width: 560px;
+  color: rgba(45,31,20,0.5); max-width: 560px;
 }
 
+/* SECTIONS */
 .section { padding: 100px 5%; }
 .section.alt {
-  background: rgba(0,85,255,0.03);
-  border-top: 1px solid rgba(0,85,255,0.1);
-  border-bottom: 1px solid rgba(0,85,255,0.1);
+  background: rgba(196,120,74,0.04);
+  border-top: 1px solid rgba(196,120,74,0.12);
+  border-bottom: 1px solid rgba(196,120,74,0.12);
 }
 .section-inner { max-width: 1200px; margin: 0 auto; }
 .section-header { margin-bottom: 64px; max-width: 600px; }
 .section-label {
   font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em;
-  text-transform: uppercase; color: #0055ff; display: block; margin-bottom: 14px;
+  text-transform: uppercase; color: #c4784a; display: block; margin-bottom: 14px;
 }
 .section-header h2 {
   font-family: 'Playfair Display', serif; font-size: clamp(30px, 4vw, 48px);
-  line-height: 1.2; color: #e8eaf0; margin-bottom: 16px;
+  line-height: 1.2; color: #2d1f14; margin-bottom: 16px;
 }
 .section-header p {
   font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.9;
-  color: rgba(255,255,255,0.4);
+  color: rgba(45,31,20,0.5);
 }
 
 /* PARTNER CARDS */
 .partner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .partner-card {
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 4px; overflow: hidden; transition: border-color 0.3s, transform 0.3s;
+  background: rgba(255,255,255,0.7); border: 1px solid rgba(45,31,20,0.08);
+  border-radius: 6px; overflow: hidden; transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
-.partner-card:hover { border-color: rgba(0,85,255,0.4); transform: translateY(-4px); }
-.partner-card.featured { border-color: rgba(0,85,255,0.3); background: rgba(0,85,255,0.05); }
+.partner-card:hover { border-color: rgba(196,120,74,0.4); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(160,85,53,0.1); }
+.partner-card.featured { border-color: rgba(196,120,74,0.3); background: rgba(196,120,74,0.04); }
 
 .partner-logo-wrap {
   position: relative; height: 140px; display: flex; align-items: center; justify-content: center;
-  border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid rgba(45,31,20,0.06); background: rgba(255,255,255,0.5);
 }
 .partner-logo-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .brand-initials {
@@ -304,63 +311,64 @@ const ownProducts = [
 }
 .brand-label-sm {
   font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: rgba(255,255,255,0.3);
+  text-transform: uppercase; color: rgba(45,31,20,0.3);
 }
-.ordinary .brand-initials { color: #e8eaf0; }
-.nivea .brand-initials { color: #3399ff; }
-.neutrogena .brand-initials { color: #00aaff; }
+.ordinary .brand-initials { color: #2d1f14; }
+.nivea .brand-initials { color: #c4784a; }
+.neutrogena .brand-initials { color: #a05535; }
 
 .partner-badge {
   position: absolute; top: 14px; right: 14px;
   font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.14em;
   text-transform: uppercase; padding: 4px 10px; border-radius: 2px;
-  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.35);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(45,31,20,0.05); color: rgba(45,31,20,0.35);
+  border: 1px solid rgba(45,31,20,0.1);
 }
-.featured-badge { background: rgba(0,85,255,0.18); color: #00aaff; border-color: rgba(0,85,255,0.4); }
+.featured-badge { background: rgba(196,120,74,0.12); color: #c4784a; border-color: rgba(196,120,74,0.35); }
 
 .partner-body { padding: 28px 28px 32px; }
 .partner-body h3 {
   font-family: 'Bebas Neue', sans-serif; font-size: 26px;
-  letter-spacing: 0.08em; color: #e8eaf0; margin-bottom: 6px;
+  letter-spacing: 0.08em; color: #2d1f14; margin-bottom: 6px;
 }
 .partner-tagline {
   font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
-  color: #0055ff; text-transform: uppercase; margin-bottom: 14px;
+  color: #c4784a; text-transform: uppercase; margin-bottom: 14px;
 }
 .partner-desc {
   font-family: 'DM Mono', monospace; font-size: 11px; line-height: 1.8;
-  color: rgba(255,255,255,0.4); margin-bottom: 20px;
+  color: rgba(45,31,20,0.5); margin-bottom: 20px;
 }
 .partner-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .ptag {
   font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em;
   text-transform: uppercase; padding: 4px 10px; border-radius: 2px;
-  background: rgba(0,85,255,0.08); border: 1px solid rgba(0,85,255,0.18);
-  color: rgba(255,255,255,0.45);
+  background: rgba(196,120,74,0.07); border: 1px solid rgba(196,120,74,0.18);
+  color: rgba(45,31,20,0.5);
 }
 
 /* SCANNER CARDS */
 .scanner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .scanner-card {
-  border: 1px solid rgba(255,255,255,0.07); border-radius: 4px;
-  background: rgba(255,255,255,0.02); overflow: hidden;
-  transition: border-color 0.3s, transform 0.3s;
+  border: 1px solid rgba(45,31,20,0.08); border-radius: 6px;
+  background: rgba(255,255,255,0.7); overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
-.scanner-card:hover { border-color: rgba(0,85,255,0.4); transform: translateY(-4px); }
+.scanner-card:hover { border-color: rgba(196,120,74,0.4); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(160,85,53,0.1); }
 
 .scanner-visual {
   position: relative; height: 200px;
   display: flex; align-items: center; justify-content: center;
-  border-bottom: 1px solid rgba(255,255,255,0.06); overflow: hidden;
+  border-bottom: 1px solid rgba(45,31,20,0.06); overflow: hidden;
+  background: rgba(196,120,74,0.03);
 }
 .scanner-glow {
   position: absolute; border-radius: 50%; filter: blur(40px);
   pointer-events: none; width: 200px; height: 200px;
 }
-.glow-lite { background: radial-gradient(circle, rgba(0,170,255,0.14) 0%, transparent 70%); }
-.glow-pro  { background: radial-gradient(circle, rgba(0,85,255,0.22) 0%, transparent 70%); }
-.glow-clinic { background: radial-gradient(circle, rgba(120,0,255,0.16) 0%, transparent 70%); }
+.glow-lite { background: radial-gradient(circle, rgba(196,120,74,0.18) 0%, transparent 70%); }
+.glow-pro  { background: radial-gradient(circle, rgba(160,85,53,0.25) 0%, transparent 70%); }
+.glow-clinic { background: radial-gradient(circle, rgba(212,114,106,0.18) 0%, transparent 70%); }
 
 .scanner-placeholder { position: relative; z-index: 1; }
 .scanner-placeholder svg { width: 150px; height: 180px; }
@@ -370,9 +378,9 @@ const ownProducts = [
   font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.14em;
   text-transform: uppercase; padding: 5px 10px; border-radius: 2px;
 }
-.tier-lite { background: rgba(0,170,255,0.12); color: #00aaff; border: 1px solid rgba(0,170,255,0.25); }
-.tier-pro { background: rgba(0,85,255,0.18); color: #4488ff; border: 1px solid rgba(0,85,255,0.35); }
-.tier-clinic { background: rgba(120,0,255,0.14); color: #aa88ff; border: 1px solid rgba(120,0,255,0.3); }
+.tier-lite { background: rgba(196,120,74,0.1); color: #c4784a; border: 1px solid rgba(196,120,74,0.25); }
+.tier-pro  { background: rgba(160,85,53,0.14); color: #a05535; border: 1px solid rgba(160,85,53,0.3); }
+.tier-clinic { background: rgba(212,114,106,0.1); color: #d4726a; border: 1px solid rgba(212,114,106,0.3); }
 
 .scanner-body { padding: 28px; }
 .scanner-name-row {
@@ -380,90 +388,91 @@ const ownProducts = [
   margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
 }
 .scanner-name-row h3 {
-  font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.08em; color: #e8eaf0;
+  font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.08em; color: #2d1f14;
 }
 .scanner-price {
-  font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.06em; color: #0055ff;
+  font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.06em; color: #c4784a;
 }
 .scanner-desc {
   font-family: 'DM Mono', monospace; font-size: 11px; line-height: 1.8;
-  color: rgba(255,255,255,0.4); margin-bottom: 20px;
+  color: rgba(45,31,20,0.5); margin-bottom: 20px;
 }
 .scanner-specs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
 .spec {
   display: flex; align-items: center; gap: 10px;
   font-family: 'DM Mono', monospace; font-size: 11px;
-  color: rgba(255,255,255,0.5); letter-spacing: 0.04em;
+  color: rgba(45,31,20,0.55); letter-spacing: 0.04em;
 }
 .spec-dot {
-  width: 5px; height: 5px; background: #0055ff; border-radius: 50%;
-  flex-shrink: 0; box-shadow: 0 0 6px rgba(0,85,255,0.6);
+  width: 5px; height: 5px; background: #c4784a; border-radius: 50%;
+  flex-shrink: 0; box-shadow: 0 0 5px rgba(196,120,74,0.5);
 }
 .scanner-cta {
-  width: 100%; background: transparent; border: 1px solid rgba(0,85,255,0.3);
-  color: rgba(255,255,255,0.55); font-family: 'DM Mono', monospace;
+  width: 100%; background: transparent; border: 1px solid rgba(196,120,74,0.3);
+  color: rgba(45,31,20,0.55); font-family: 'DM Mono', monospace;
   font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
-  padding: 12px; border-radius: 2px; cursor: pointer; transition: all 0.2s;
+  padding: 12px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
 }
-.scanner-cta:hover { background: rgba(0,85,255,0.14); border-color: #0055ff; color: #fff; }
+.scanner-cta:hover { background: rgba(196,120,74,0.1); border-color: #c4784a; color: #2d1f14; }
 
 /* OWN PRODUCTS */
 .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .product-card {
-  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 4px; overflow: hidden; transition: border-color 0.3s, transform 0.3s;
+  background: rgba(255,255,255,0.7); border: 1px solid rgba(45,31,20,0.08);
+  border-radius: 6px; overflow: hidden; transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
-.product-card:hover { border-color: rgba(0,85,255,0.35); transform: translateY(-3px); }
+.product-card:hover { border-color: rgba(196,120,74,0.35); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(160,85,53,0.1); }
 
 .product-visual {
   position: relative; height: 140px; display: flex; align-items: center; justify-content: center;
-  background: rgba(0,85,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.05); overflow: hidden;
+  background: rgba(196,120,74,0.04); border-bottom: 1px solid rgba(45,31,20,0.06); overflow: hidden;
 }
 .product-glow {
   position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 60%, rgba(0,85,255,0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 60%, rgba(196,120,74,0.1) 0%, transparent 70%);
 }
 .product-visual svg { position: relative; z-index: 1; width: 100px; height: 130px; }
 
 .product-body { padding: 18px 18px 22px; }
 .product-type-badge {
   font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.16em;
-  text-transform: uppercase; color: #0055ff; margin-bottom: 8px; display: inline-block;
-  padding: 3px 8px; background: rgba(0,85,255,0.1); border: 1px solid rgba(0,85,255,0.2); border-radius: 2px;
+  text-transform: uppercase; color: #c4784a; margin-bottom: 8px; display: inline-block;
+  padding: 3px 8px; background: rgba(196,120,74,0.08); border: 1px solid rgba(196,120,74,0.2); border-radius: 2px;
 }
 .product-body h4 {
   font-family: 'Bebas Neue', sans-serif; font-size: 18px;
-  letter-spacing: 0.08em; color: #e8eaf0; margin-bottom: 8px; line-height: 1.1;
+  letter-spacing: 0.08em; color: #2d1f14; margin-bottom: 8px; line-height: 1.1;
 }
 .product-body p {
   font-family: 'DM Mono', monospace; font-size: 10px; line-height: 1.75;
-  color: rgba(255,255,255,0.35); margin-bottom: 12px;
+  color: rgba(45,31,20,0.45); margin-bottom: 12px;
 }
 .product-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .skin-tag {
   font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.1em;
   text-transform: uppercase; padding: 3px 8px; border-radius: 2px;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.35);
+  background: rgba(45,31,20,0.04); border: 1px solid rgba(45,31,20,0.08);
+  color: rgba(45,31,20,0.4);
 }
 
 /* CTA */
-.cta-strip { padding: 100px 5%; border-top: 1px solid rgba(0,85,255,0.12); text-align: center; }
+.cta-strip { padding: 100px 5%; background: #c4784a; text-align: center; }
 .cta-strip-inner { max-width: 620px; margin: 0 auto; }
 .cta-strip h2 {
   font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 6vw, 76px);
-  letter-spacing: 0.04em; line-height: 0.95; color: #e8eaf0; margin-bottom: 20px;
+  letter-spacing: 0.04em; line-height: 0.95; color: #fff; margin-bottom: 20px;
 }
+.accent-light { color: rgba(255,255,255,0.75); }
 .cta-strip p {
   font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.9;
-  color: rgba(255,255,255,0.4); margin-bottom: 36px;
+  color: rgba(255,255,255,0.7); margin-bottom: 36px;
 }
 .cta-btn {
   font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.2em;
-  background: #0055ff; color: #fff; text-decoration: none; padding: 16px 44px;
-  border-radius: 2px; display: inline-block; transition: background 0.2s, box-shadow 0.2s;
+  background: #fff; color: #c4784a; text-decoration: none; padding: 16px 44px;
+  border-radius: 4px; display: inline-block; transition: background 0.2s, transform 0.2s;
 }
-.cta-btn:hover { background: #0040cc; box-shadow: 0 0 30px rgba(0,85,255,0.4); }
+.cta-btn:hover { background: #fdf8f3; transform: translateY(-2px); }
 
 @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 900px) {

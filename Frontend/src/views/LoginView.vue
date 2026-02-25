@@ -1,36 +1,31 @@
 <template>
   <div class="auth-wrapper">
-    <div class="bg-grid"></div>
-    <div class="bg-glow glow-1"></div>
-    <div class="bg-glow glow-2"></div>
+    <div class="bg-petal bg-petal-1"></div>
+    <div class="bg-petal bg-petal-2"></div>
+    <div class="bg-petal bg-petal-3"></div>
 
-    <!-- Back to home -->
     <router-link to="/" class="back-link">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
       Back
     </router-link>
 
     <div class="auth-container">
-      <!-- Brand -->
       <router-link to="/" class="brand">
-        <span class="brand-dot"></span>
-        <span class="brand-name">DECODE<span class="brand-accent">.</span></span>
+        <span class="brand-petal">✿</span>
+        <span class="brand-name">FACE<span class="brand-accent">.IT</span></span>
       </router-link>
 
-      <p class="auth-tagline">{{ mode === 'login' ? 'Welcome back.' : 'Start your skin journey.' }}</p>
+      <p class="auth-tagline">{{ mode === 'login' ? 'Welcome back, lovely.' : 'Start your skin journey.' }}</p>
 
-      <!-- Tab bar -->
       <div class="tab-bar">
         <button :class="['tab', { active: mode === 'login' }]" @click="switchMode('login')">Sign In</button>
         <button :class="['tab', { active: mode === 'register' }]" @click="switchMode('register')">Register</button>
         <div class="tab-indicator" :style="{ transform: mode === 'login' ? 'translateX(0)' : 'translateX(100%)' }"></div>
       </div>
 
-      <!-- Form -->
       <form class="auth-form" @submit.prevent="handleSubmit">
         <transition name="slide" mode="out-in">
           <div :key="mode" class="fields">
-            <!-- Full Name (register) -->
             <div v-if="mode === 'register'" class="field-group">
               <label>Full Name</label>
               <div class="input-wrap">
@@ -39,7 +34,6 @@
               </div>
             </div>
 
-            <!-- Email -->
             <div class="field-group">
               <label>Email</label>
               <div class="input-wrap">
@@ -48,7 +42,6 @@
               </div>
             </div>
 
-            <!-- Phone (register) -->
             <div v-if="mode === 'register'" class="field-group">
               <label>Phone <span class="optional">(optional)</span></label>
               <div class="input-wrap phone-wrap">
@@ -61,7 +54,6 @@
               <span class="field-hint">e.g. 081 234 5678</span>
             </div>
 
-            <!-- Password -->
             <div class="field-group">
               <label>Password</label>
               <div class="input-wrap">
@@ -76,14 +68,12 @@
           </div>
         </transition>
 
-        <!-- Message -->
         <transition name="fade">
           <div v-if="message" :class="['msg', msgType]">{{ message }}</div>
         </transition>
 
-        <!-- Submit -->
         <button type="submit" class="submit-btn" :disabled="loading">
-          <span v-if="!loading">{{ mode === 'login' ? 'Access System' : 'Create Account' }}</span>
+          <span v-if="!loading">{{ mode === 'login' ? 'Sign In' : 'Create Account' }}</span>
           <span v-else class="spinner"></span>
         </button>
       </form>
@@ -100,9 +90,11 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
 
 const API_BASE = 'http://localhost:5000/api'
+const router = useRouter()
 
 const mode = ref('login')
 const loading = ref(false)
@@ -123,29 +115,24 @@ function formatZAPhone(e) {
 }
 
 function switchMode(m) {
-  mode.value = m
-  message.value = ''
-  form.full_name = ''
-  form.email = ''
-  form.phone = ''
-  form.password = ''
+  mode.value = m; message.value = ''
+  form.full_name = ''; form.email = ''; form.phone = ''; form.password = ''
   showPass.value = false
 }
 
 async function handleSubmit() {
-  loading.value = true
-  message.value = ''
+  loading.value = true; message.value = ''
   try {
     if (mode.value === 'login') {
       const res = await axios.post(`${API_BASE}/users/login`, {
-        email: form.email,
-        password: form.password,
+        email: form.email, password: form.password,
       })
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('user', JSON.stringify(res.data.user))
-      msgType.value = 'success'
-      message.value = `Welcome back, ${res.data.user.full_name}!`
-      // TODO: router.push('/dashboard')
+      // Notify navbar in the same tab
+      window.dispatchEvent(new Event('user-updated'))
+      // Redirect home
+      router.push('/')
     } else {
       await axios.post(`${API_BASE}/users`, {
         full_name: form.full_name,
@@ -154,7 +141,7 @@ async function handleSubmit() {
         phone: form.phone ? '+27' + form.phone.replace(/\s/g, '') : undefined,
       })
       msgType.value = 'success'
-      message.value = 'Account created! You can now sign in.'
+      message.value = 'Account created! Signing you in…'
       setTimeout(() => switchMode('login'), 1500)
     }
   } catch (err) {
@@ -167,210 +154,144 @@ async function handleSubmit() {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;1,300&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 .auth-wrapper {
   min-height: 100vh;
-  background: #080b10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
+  background: #fdf8f3;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
   font-family: 'DM Mono', monospace;
   padding: 40px 20px;
 }
 
-.bg-grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(0,100,255,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,100,255,0.06) 1px, transparent 1px);
-  background-size: 44px 44px;
-  animation: gridShift 25s linear infinite;
-  pointer-events: none;
+/* Decorative petals */
+.bg-petal {
+  position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.35;
 }
-@keyframes gridShift { from{background-position:0 0} to{background-position:44px 44px} }
-
-.bg-glow {
-  position: absolute; border-radius: 50%; pointer-events: none; filter: blur(80px);
+.bg-petal-1 {
+  width: 500px; height: 500px; top: -150px; right: -100px;
+  background: radial-gradient(circle, #f0d5c0 0%, transparent 70%);
 }
-.glow-1 {
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(0,80,255,0.15) 0%, transparent 70%);
-  top: -150px; right: -150px;
+.bg-petal-2 {
+  width: 350px; height: 350px; bottom: -80px; left: -80px;
+  background: radial-gradient(circle, #e8c8b0 0%, transparent 70%);
 }
-.glow-2 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(0,170,255,0.08) 0%, transparent 70%);
-  bottom: -100px; left: -100px;
+.bg-petal-3 {
+  width: 200px; height: 200px; top: 40%; left: 10%;
+  background: radial-gradient(circle, #f5dfd0 0%, transparent 70%);
 }
 
-/* Back link */
 .back-link {
-  position: fixed;
-  top: 28px; left: 28px;
+  position: fixed; top: 28px; left: 28px;
   display: flex; align-items: center; gap: 6px;
   font-family: 'DM Mono', monospace; font-size: 10px;
   letter-spacing: 0.12em; text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
-  text-decoration: none;
-  z-index: 10;
-  transition: color 0.2s;
+  color: rgba(45,31,20,0.4); text-decoration: none; z-index: 10; transition: color 0.2s;
 }
-.back-link:hover { color: #fff; }
+.back-link:hover { color: #2d1f14; }
 .back-link svg { width: 14px; height: 14px; }
 
-/* Card */
 .auth-container {
-  position: relative; z-index: 1;
-  width: 100%; max-width: 420px;
-  background: rgba(10,14,22,0.92);
-  border: 1px solid rgba(0,100,255,0.2);
-  border-radius: 4px;
-  padding: 44px 40px 36px;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 0 80px rgba(0,80,255,0.1), inset 0 1px 0 rgba(255,255,255,0.04);
-  animation: cardIn 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  position: relative; z-index: 1; width: 100%; max-width: 420px;
+  background: rgba(255,252,248,0.96);
+  border: 1px solid rgba(196,120,74,0.18);
+  border-radius: 8px; padding: 44px 40px 36px;
+  box-shadow: 0 8px 60px rgba(160,85,53,0.1), 0 2px 8px rgba(160,85,53,0.06);
+  animation: cardIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
 }
-@keyframes cardIn { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+@keyframes cardIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
 
-/* Brand */
-.brand {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 8px; text-decoration: none;
-}
-.brand-dot {
-  width: 8px; height: 8px; background: #0055ff; border-radius: 50%;
-  box-shadow: 0 0 10px #0055ff; animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.brand-name {
-  font-family: 'Bebas Neue', sans-serif; font-size: 24px;
-  letter-spacing: 0.15em; color: #e8eaf0;
-}
-.brand-accent { color: #0055ff; }
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; text-decoration: none; }
+.brand-petal { font-size: 18px; line-height: 1; animation: petalSpin 5s ease-in-out infinite; display: inline-block; }
+@keyframes petalSpin { 0%,100%{transform:rotate(0)} 50%{transform:rotate(15deg)} }
+.brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.15em; color: #2d1f14; }
+.brand-accent { color: #c4784a; }
 
-.auth-tagline {
-  font-size: 12px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; margin-bottom: 32px;
-}
+.auth-tagline { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: rgba(45,31,20,0.45); margin-bottom: 32px; font-style: italic; }
 
 /* Tabs */
 .tab-bar {
   display: grid; grid-template-columns: 1fr 1fr; position: relative;
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 2px; margin-bottom: 32px; overflow: hidden;
+  background: rgba(45,31,20,0.04); border: 1px solid rgba(196,120,74,0.15);
+  border-radius: 4px; margin-bottom: 32px; overflow: hidden;
 }
 .tab {
-  background: none; border: none; color: rgba(255,255,255,0.4);
-  font-family: 'DM Mono', monospace; font-size: 10px;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  background: none; border: none; color: rgba(45,31,20,0.45);
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
   padding: 12px; cursor: pointer; position: relative; z-index: 1; transition: color 0.3s;
 }
-.tab.active { color: #fff; }
+.tab.active { color: #2d1f14; }
 .tab-indicator {
   position: absolute; width: 50%; height: 100%; top: 0; left: 0;
-  background: rgba(0,85,255,0.18); border-bottom: 2px solid #0055ff;
+  background: rgba(196,120,74,0.12); border-bottom: 2px solid #c4784a;
   transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); z-index: 0;
 }
 
 /* Fields */
 .fields { display: flex; flex-direction: column; gap: 20px; }
 .field-group { display: flex; flex-direction: column; gap: 8px; }
-.field-group label {
-  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.35);
-}
-.optional { color: rgba(255,255,255,0.18); font-size: 8px; }
+.field-group label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(45,31,20,0.4); }
+.optional { color: rgba(45,31,20,0.2); font-size: 8px; }
 
 .input-wrap { position: relative; display: flex; align-items: center; }
-.input-icon {
-  position: absolute; left: 14px; width: 15px; height: 15px;
-  color: rgba(255,255,255,0.25); pointer-events: none;
-}
+.input-icon { position: absolute; left: 14px; width: 15px; height: 15px; color: rgba(45,31,20,0.25); pointer-events: none; }
 .input-wrap input {
-  width: 100%; background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08); border-radius: 2px;
-  color: #e8eaf0; font-family: 'DM Mono', monospace; font-size: 13px;
+  width: 100%; background: rgba(45,31,20,0.03); border: 1px solid rgba(45,31,20,0.12);
+  border-radius: 4px; color: #2d1f14; font-family: 'DM Mono', monospace; font-size: 13px;
   padding: 12px 42px; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
 }
-.input-wrap input::placeholder { color: rgba(255,255,255,0.18); }
-.input-wrap input:focus {
-  border-color: rgba(0,85,255,0.6);
-  box-shadow: 0 0 0 3px rgba(0,85,255,0.1);
-}
+.input-wrap input::placeholder { color: rgba(45,31,20,0.2); }
+.input-wrap input:focus { border-color: rgba(196,120,74,0.5); box-shadow: 0 0 0 3px rgba(196,120,74,0.1); }
 
 .eye-btn {
   position: absolute; right: 12px; background: none; border: none;
-  cursor: pointer; color: rgba(255,255,255,0.25); display: flex; padding: 0; transition: color 0.2s;
+  cursor: pointer; color: rgba(45,31,20,0.25); display: flex; padding: 0; transition: color 0.2s;
 }
-.eye-btn:hover { color: rgba(255,255,255,0.6); }
+.eye-btn:hover { color: rgba(45,31,20,0.6); }
 .eye-btn svg { width: 15px; height: 15px; }
 
 /* Phone */
 .phone-wrap {
-  display: flex; align-items: center; gap: 0;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 2px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
+  display: flex; align-items: center; background: rgba(45,31,20,0.03);
+  border: 1px solid rgba(45,31,20,0.12); border-radius: 4px; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.phone-wrap:focus-within {
-  border-color: rgba(0,85,255,0.6); box-shadow: 0 0 0 3px rgba(0,85,255,0.1);
-}
+.phone-wrap:focus-within { border-color: rgba(196,120,74,0.5); box-shadow: 0 0 0 3px rgba(196,120,74,0.1); }
 .phone-prefix {
   display: flex; align-items: center; gap: 6px; padding: 12px 12px 12px 14px;
-  border-right: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03); white-space: nowrap; flex-shrink: 0;
+  border-right: 1px solid rgba(45,31,20,0.1); background: rgba(45,31,20,0.02); flex-shrink: 0;
 }
-.za-flag { font-size: 14px; line-height: 1; }
-.za-code { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 0.04em; }
-.phone-input {
-  flex: 1; background: transparent !important; border: none !important; box-shadow: none !important;
-  padding: 12px 14px !important; letter-spacing: 0.08em; color: #e8eaf0;
-}
+.za-flag { font-size: 14px; }
+.za-code { font-size: 13px; color: rgba(45,31,20,0.5); letter-spacing: 0.04em; }
+.phone-input { flex: 1; background: transparent !important; border: none !important; box-shadow: none !important; padding: 12px 14px !important; color: #2d1f14; }
 .phone-input:focus { outline: none; }
-.field-hint { font-size: 9px; color: rgba(255,255,255,0.18); letter-spacing: 0.06em; }
+.field-hint { font-size: 9px; color: rgba(45,31,20,0.2); letter-spacing: 0.06em; }
 
 /* Message */
-.msg {
-  margin-top: 16px; padding: 10px 14px; border-radius: 2px;
-  font-size: 11px; letter-spacing: 0.04em; border-left: 2px solid;
-}
-.msg.error { background: rgba(255,50,50,0.07); border-color: #ff3232; color: #ff8080; }
-.msg.success { background: rgba(0,200,100,0.07); border-color: #00c864; color: #00c864; }
+.msg { margin-top: 16px; padding: 10px 14px; border-radius: 4px; font-size: 11px; letter-spacing: 0.04em; border-left: 2px solid; }
+.msg.error { background: rgba(200,50,50,0.06); border-color: #c83232; color: #c83232; }
+.msg.success { background: rgba(100,170,80,0.08); border-color: #5aaa40; color: #5aaa40; }
 
 /* Submit */
 .submit-btn {
-  margin-top: 24px; width: 100%; background: #0055ff; border: none; border-radius: 2px;
+  margin-top: 24px; width: 100%; background: #c4784a; border: none; border-radius: 4px;
   color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 16px;
-  letter-spacing: 0.2em; padding: 14px; cursor: pointer; position: relative; overflow: hidden;
+  letter-spacing: 0.2em; padding: 14px; cursor: pointer; overflow: hidden;
   transition: background 0.2s, box-shadow 0.2s;
 }
-.submit-btn::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-  transform: translateX(-100%); transition: transform 0.5s;
-}
-.submit-btn:hover::before { transform: translateX(100%); }
-.submit-btn:hover { background: #0040cc; box-shadow: 0 0 24px rgba(0,85,255,0.4); }
+.submit-btn:hover { background: #a05535; box-shadow: 0 0 24px rgba(196,120,74,0.35); }
 .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
 .spinner {
   display: inline-block; width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff;
+  border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
   border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle;
 }
 @keyframes spin { to{transform:rotate(360deg)} }
 
-.footer-note {
-  margin-top: 24px; text-align: center; font-size: 11px;
-  color: rgba(255,255,255,0.25); letter-spacing: 0.04em;
-}
-.link-btn {
-  background: none; border: none; color: #0055ff; font-family: 'DM Mono', monospace;
-  font-size: 11px; cursor: pointer; text-decoration: underline;
-  text-underline-offset: 3px; transition: color 0.2s;
-}
-.link-btn:hover { color: #4488ff; }
+.footer-note { margin-top: 24px; text-align: center; font-size: 11px; color: rgba(45,31,20,0.3); letter-spacing: 0.04em; }
+.link-btn { background: none; border: none; color: #c4784a; font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
 .slide-enter-active, .slide-leave-active { transition: all 0.22s ease; }
 .slide-enter-from { opacity: 0; transform: translateY(8px); }
@@ -380,11 +301,6 @@ async function handleSubmit() {
 
 @media (max-width: 480px) {
   .auth-wrapper { align-items: flex-start; padding: 0; }
-  .auth-container {
-    max-width: 100%; min-height: 100dvh; border-radius: 0;
-    border-left: none; border-right: none; border-top: none;
-    padding: 52px 24px 36px; box-shadow: none;
-  }
-  .back-link { top: 20px; left: 20px; }
+  .auth-container { max-width: 100%; min-height: 100dvh; border-radius: 0; border-left: none; border-right: none; border-top: none; padding: 52px 24px 36px; box-shadow: none; }
 }
 </style>
