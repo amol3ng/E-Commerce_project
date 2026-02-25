@@ -2,77 +2,124 @@ import pool from '../config/db.js';
 
 // POST /api/orders  — place order from cart
 export const createOrder = async (req, res) => {
-  const { user_id, items, shipping_address, payment_method, total_amount } = req.body;
+  const {
+    user_id,
+    items,
+    shipping_address,
+    billing_address,
+    payment_method
+  } = req.body;
 
-  if (!user_id || !items?.length || !shipping_address) {
-    return res.status(400).json({ message: 'user_id, items, and shipping_address are required' });
+  if (!user_id || !items || !shipping_address || !payment_method) {
+    return res.status(400).json({
+      message: "user_id, items, shipping_address and payment_method are required"
+    });
   }
 
-  const conn = await pool.getConnection();
+  const connection = await pool.getConnection();
+
   try {
-    await conn.beginTransaction();
+    await connection.beginTransaction();
 
-    // Generate order number
-    const order_number = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-    const order_uuid = crypto.randomUUID();
-
-    // Create order
-    const [orderResult] = await conn.query(`
-      INSERT INTO orders
-        (order_uuid, user_id, order_number, order_status, payment_status,
-         total_amount, shipping_address, payment_method)
-      VALUES (?, ?, ?, 'pending', 'pending', ?, ?, ?)
-    `, [
-      order_uuid, user_id, order_number,
-      total_amount,
-      JSON.stringify(shipping_address),
-      payment_method || 'card'
-    ]);
-
-    const orderId = orderResult.insertId;
-
-    // Insert order items
-    for (const item of items) {
-      await conn.query(`
-        INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price)
-        VALUES (?, ?, ?, ?, ?)
-      `, [orderId, item.product_id, item.product_name, item.quantity, item.unit_price]);
-    }
-
-    // Simulated payment record
-    await conn.query(`
-      INSERT INTO payments (payment_uuid, order_id, amount, payment_method, transaction_id, status, metadata)
-      VALUES (?, ?, ?, ?, ?, 'completed', ?)
-    `, [
-      crypto.randomUUID(), orderId, total_amount, payment_method || 'simulated',
-      'SIM-' + Date.now(),
-      JSON.stringify({ gateway: 'simulated' })
-    ]);
-
-    // Update order payment status to paid (simulated)
-    await conn.query(
-      `UPDATE orders SET payment_status = 'paid', order_status = 'processing' WHERE id = ?`,
-      [orderId]
+    // ✅ Check user exists
+    const [[user]] = await connection.query(
+      "SELECT id FROM users WHERE id = ?",
+      [user_id]
     );
 
-    // Clear the user's cart
-    await conn.query(`
-      DELETE ci FROM cart_items ci
-      JOIN carts c ON c.id = ci.cart_id
-      WHERE c.user_id = ?
-    `, [user_id]);
+    if (!user) {
+      await connection.rollback();
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    await conn.commit();
+    let total_amount = 0;
 
-    res.status(201).json({ message: 'Order placed', order_number, order_uuid });
+    // ✅ First loop: validate + calculate total
+    for (const item of items) {
+      const [[product]] = await connection.query(
+        "SELECT id, name, price, stock_qty FROM products WHERE id = ?",
+        [item.product_id]
+      );
+
+      if (!product) {
+        await connection.rollback();
+        return res.status(404).json({ message: `Product ${item.product_id} not found` });
+      }
+
+      if (product.stock_qty < item.quantity) {
+        await connection.rollback();
+        return res.status(400).json({
+          message: `Insufficient stock for product ${item.product_id}`
+        });
+      }
+
+      total_amount += product.price * item.quantity;
+    }
+
+    // ✅ Generate order number
+    const order_number = `ORD-${Date.now()}`;
+
+    // ✅ Insert order
+    const [orderResult] = await connection.query(`
+      INSERT INTO orders
+      (user_id, order_number, total_amount, shipping_address, billing_address, payment_method)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `, [
+      user_id,
+      order_number,
+      total_amount,
+      JSON.stringify(shipping_address),
+      billing_address ? JSON.stringify(billing_address) : null,
+      payment_method
+    ]);
+
+    const order_id = orderResult.insertId;
+
+    // ✅ Second loop: insert items + update stock
+    for (const item of items) {
+      const [[product]] = await connection.query(
+        "SELECT id, name, price FROM products WHERE id = ?",
+        [item.product_id]
+      );
+
+      await connection.query(`
+        INSERT INTO order_items 
+        (order_id, product_id, product_name, quantity, unit_price)
+        VALUES (?, ?, ?, ?, ?)
+      `, [
+        order_id,
+        product.id,
+        product.name,      // ✅ FIXED
+        item.quantity,
+        product.price      // maps to unit_price
+      ]);
+
+      await connection.query(`
+        UPDATE products
+        SET stock_qty = stock_qty - ?
+        WHERE id = ?
+      `, [
+        item.quantity,
+        product.id
+      ]);
+    }
+
+    await connection.commit();
+
+    res.status(201).json({
+      message: "Order created successfully",
+      order_id,
+      order_number,
+      total_amount
+    });
+
   } catch (err) {
-    await conn.rollback();
+    await connection.rollback();
     res.status(500).json({ message: err.message });
   } finally {
-    conn.release();
+    connection.release();
   }
 };
-
 // GET /api/orders/user/:userId
 export const getUserOrders = async (req, res) => {
   const { userId } = req.params;
