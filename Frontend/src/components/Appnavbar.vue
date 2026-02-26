@@ -14,6 +14,7 @@
         <router-link to="/product" class="nav-link" active-class="active">Product</router-link>
         <router-link to="/brands" class="nav-link" active-class="active">Brands</router-link>
         <router-link to="/brands#scanners" class="nav-link cultivate" active-class="active">Cultivate Your Own</router-link>
+        <router-link to="/contact" class="nav-link" active-class="active">Contact Us</router-link>
       </div>
 
       <!-- Desktop actions -->
@@ -53,6 +54,7 @@
         <router-link to="/product" class="mob-link" @click="menuOpen = false">Product</router-link>
         <router-link to="/brands" class="mob-link" @click="menuOpen = false">Brands</router-link>
         <router-link to="/brands#scanners" class="mob-link cultivate" @click="menuOpen = false">Cultivate Your Own</router-link>
+        <router-link to="/contact" class="mob-link" @click="menuOpen = false">Contact Us</router-link>
         <div class="mob-divider"></div>
         <template v-if="user">
           <router-link to="/cart" class="mob-link" @click="menuOpen = false">🛍 Cart{{ cartCount > 0 ? ` (${cartCount})` : '' }}</router-link>

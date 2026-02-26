@@ -6,6 +6,7 @@ import BrandsView from '../views/BrandsView.vue'
 import LoginView from '../views/LoginView.vue'
 import CartView from '../views/CartView.vue'
 import CheckoutView from '../views/CheckoutView.vue'
+import ContactView from '../views/Contactview.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,7 @@ const router = createRouter({
   name: 'checkout',
   component: CheckoutView,
 },
+{ path: '/contact', name: 'contact', component: ContactView },
   ],
   scrollBehavior() {
     return { top: 0 }
