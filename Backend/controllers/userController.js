@@ -1,8 +1,14 @@
 import pool from '../config/db.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-// ========================
-// CREATE USER
-// ========================
+const signToken = (user) =>
+  jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    process.env.JWT_SECRET || 'dev-secret-change-me',
+    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+  );
+
 export const createUser = async (req, res) => {
   const { full_name, email, password, phone } = req.body;
 
@@ -11,20 +17,34 @@ export const createUser = async (req, res) => {
   }
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const [result] = await pool.query(
       "INSERT INTO users (full_name, email, password, phone, role, is_verified) VALUES (?, ?, ?, ?, 'customer', FALSE)",
-      [full_name, email, password, phone]
+      [full_name, email, hashedPassword, phone]
     );
 
-    res.status(201).json({ message: 'User created successfully', id: result.insertId });
+    const [rows] = await pool.query(
+      'SELECT id, full_name, email, phone, role, created_at FROM users WHERE id = ?',
+      [result.insertId]
+    );
+
+    const user = rows[0];
+    const token = signToken(user);
+
+    return res.status(201).json({
+      message: 'User created successfully',
+      token,
+      user,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ message: 'Email already exists' });
+    }
+    return res.status(500).json({ message: error.message });
   }
 };
 
-// ========================
-// LOGIN
-// ========================
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -43,88 +63,112 @@ export const loginUser = async (req, res) => {
     }
 
     const user = rows[0];
+    const isValidPassword = await bcrypt.compare(password, user.password);
 
-    if (password !== user.password) {
+    if (!isValidPassword) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    res.json({
-      token: 'mock-token-for-testing',
+    const token = signToken(user);
+
+    return res.json({
+      token,
       user: {
         id: user.id,
         full_name: user.full_name,
         email: user.email,
         phone: user.phone,
+        role: user.role,
       },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-// ========================
-// GET PROFILE
-// ========================
-export const getUser = async (req, res) => {
-  const { id } = req.params;
-
+export const getCurrentUser = async (req, res) => {
   try {
     const [rows] = await pool.query(
-      "SELECT id, full_name, email, phone, created_at FROM users WHERE id = ? AND role = 'customer'",
-      [id]
+      "SELECT id, full_name, email, phone, role, created_at FROM users WHERE id = ? AND role = 'customer'",
+      [req.user.id]
     );
 
     if (rows.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json(rows[0]);
+    return res.json(rows[0]);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-// ========================
-// UPDATE PROFILE
-// ========================
+export const getUser = async (req, res) => {
+  const requestedUserId = Number(req.params.id);
+
+  if (req.user.role !== 'admin' && req.user.id !== requestedUserId) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  try {
+    const [rows] = await pool.query(
+      "SELECT id, full_name, email, phone, created_at FROM users WHERE id = ? AND role = 'customer'",
+      [requestedUserId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.json(rows[0]);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const updateUser = async (req, res) => {
-  const { id } = req.params;
+  const requestedUserId = Number(req.params.id);
   const { full_name, phone } = req.body;
+
+  if (req.user.role !== 'admin' && req.user.id !== requestedUserId) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
 
   try {
     const [result] = await pool.query(
       "UPDATE users SET full_name = ?, phone = ? WHERE id = ? AND role = 'customer'",
-      [full_name, phone, id]
+      [full_name, phone, requestedUserId]
     );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found or no changes made' });
     }
 
-    res.json({ message: 'User updated successfully' });
+    return res.json({ message: 'User updated successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-// ========================
-// DELETE PROFILE
-// ========================
 export const deleteUser = async (req, res) => {
-  const { id } = req.params;
+  const requestedUserId = Number(req.params.id);
+
+  if (req.user.role !== 'admin' && req.user.id !== requestedUserId) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
 
   try {
     const [result] = await pool.query(
       "DELETE FROM users WHERE id = ? AND role = 'customer'",
-      [id]
+      [requestedUserId]
     );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({ message: 'User account deleted successfully' });
+    return res.json({ message: 'User account deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
