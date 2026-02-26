@@ -60,29 +60,7 @@
           <div class="scanner-card" v-for="scanner in scanners" :key="scanner.name">
             <div class="scanner-visual">
               <div class="scanner-glow" :class="scanner.glowClass"></div>
-              <div class="scanner-placeholder">
-                <svg viewBox="0 0 180 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="40" y="20" width="100" height="160" rx="12" fill="rgba(196,120,74,0.06)" stroke="rgba(196,120,74,0.3)" stroke-width="1.5"/>
-                  <rect x="55" y="40" width="70" height="90" rx="6" fill="rgba(196,120,74,0.06)" stroke="rgba(196,120,74,0.2)" stroke-width="1"/>
-                  <ellipse cx="90" cy="85" rx="22" ry="28" fill="none" stroke="#c4784a" stroke-width="1" opacity="0.6"/>
-                  <path d="M78 78 L84 84 L90 78" fill="none" stroke="#c4784a" stroke-width="1" opacity="0.7"/>
-                  <path d="M90 78 L96 84 L102 78" fill="none" stroke="#c4784a" stroke-width="1" opacity="0.7"/>
-                  <path d="M82 98 Q90 104 98 98" fill="none" stroke="#c4784a" stroke-width="1.2" opacity="0.8"/>
-                  <path d="M58 43 L58 50 L65 50" stroke="#c4784a" stroke-width="1.5" opacity="0.8"/>
-                  <path d="M122 43 L122 50 L115 50" stroke="#c4784a" stroke-width="1.5" opacity="0.8"/>
-                  <path d="M58 127 L58 120 L65 120" stroke="#c4784a" stroke-width="1.5" opacity="0.8"/>
-                  <path d="M122 127 L122 120 L115 120" stroke="#c4784a" stroke-width="1.5" opacity="0.8"/>
-                  <rect x="70" y="148" width="40" height="5" rx="2.5" fill="rgba(196,120,74,0.3)"/>
-                  <circle cx="90" cy="168" r="8" fill="none" stroke="rgba(196,120,74,0.4)" stroke-width="1.5"/>
-                  <circle cx="90" cy="168" r="3.5" fill="rgba(196,120,74,0.4)"/>
-                  <line x1="58" y1="85" x2="122" y2="85" stroke="#c4784a" stroke-width="0.5" opacity="0.2"/>
-                  <line x1="58" y1="85" x2="122" y2="85" stroke="#c4784a" stroke-width="1" opacity="0.5">
-                    <animate attributeName="y1" values="45;125;45" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="y2" values="45;125;45" dur="3s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite"/>
-                  </line>
-                </svg>
-              </div>
+              <img :src="scanner.image" :alt="scanner.name" class="scanner-img" />
               <div class="scanner-tier-badge" :class="scanner.tierClass">{{ scanner.tier }}</div>
             </div>
             <div class="scanner-body">
@@ -103,27 +81,19 @@
       </div>
     </section>
 
-    <!-- ── FACE.IT OWN PRODUCTS ── -->
+    <!-- ── PARTNER PRODUCTS ── -->
     <section class="section">
       <div class="section-inner">
         <div class="section-header">
-          <span class="section-label">Face.IT Range</span>
-          <h2>Our own products.<br/><span class="accent">Formulated from your data.</span></h2>
-          <p>Beyond our partner brands, Face.IT offers our own clinically-informed product line — every formula shaped by real scan data from thousands of skin profiles.</p>
+          <span class="section-label">Partner Products</span>
+          <h2>Real products.<br/><span class="accent">Matched to your scan.</span></h2>
+          <p>From our brand partners — every product recommended based on your unique skin profile data.</p>
         </div>
         <div class="products-grid">
           <div class="product-card" v-for="product in ownProducts" :key="product.name">
             <div class="product-visual">
               <div class="product-glow"></div>
-              <svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="35" y="30" width="50" height="100" rx="10" fill="rgba(196,120,74,0.07)" stroke="rgba(196,120,74,0.25)" stroke-width="1.2"/>
-                <rect x="45" y="18" width="30" height="18" rx="6" fill="rgba(196,120,74,0.1)" stroke="rgba(196,120,74,0.2)" stroke-width="1"/>
-                <rect x="43" y="55" width="34" height="5" rx="2.5" fill="rgba(196,120,74,0.35)"/>
-                <rect x="46" y="66" width="28" height="3" rx="1.5" fill="rgba(196,120,74,0.2)"/>
-                <rect x="48" y="74" width="24" height="3" rx="1.5" fill="rgba(196,120,74,0.15)"/>
-                <circle cx="60" cy="100" r="12" fill="none" stroke="rgba(196,120,74,0.3)" stroke-width="1"/>
-                <text x="60" y="104" text-anchor="middle" font-size="8" fill="rgba(196,120,74,0.7)" font-family="monospace" font-weight="bold">FI</text>
-              </svg>
+              <img :src="product.image" :alt="product.name" class="product-img" />
             </div>
             <div class="product-body">
               <div class="product-type-badge">{{ product.type }}</div>
@@ -154,6 +124,26 @@
 <script setup>
 import AppNavbar from '../components/Appnavbar.vue'
 import AppFooter from '../components/Appfooter.vue'
+
+// ── Import scanner images ──
+import imgScannerLite from '../assets/The Face I.T 1.png'
+import imgScannerPro from '../assets/The Face I.T Pro 1.jpg'
+import imgScannerClinic from '../assets/face scanner.jpg'
+
+// ── Import product images ──
+import imgBrightBoostSerum from '../assets/BoostIlluminatingserum.jpg'
+import imgDeliveryEssence from '../assets/Delivery Essence.jpg'
+import imgGarnierPureActive from '../assets/Garnier Pure active.jpg'
+import imgGlycolicAcid from '../assets/Glycolic Acid.jpg'
+import imgLacticAcid from '../assets/Lactic Acid.jpg'
+import imgNiacinamide from '../assets/Niacinmaide.jpg'
+import imgNiveaDermaDry from '../assets/Nivea derma dry control.jpg'
+import imgRetinolBoostDay from '../assets/renitol boost day cream.jpg'
+import imgRepairBodyLotion from '../assets/repair body lotion.jpg'
+import imgRetinol from '../assets/retinol.jpg'
+import imgSpotControlWash from '../assets/Spot controling wash.jpg'
+import imgCellularFiller from '../assets/The Cellular Filler Set Nivea.jpg'
+import imgLuminousSerum from '../assets/The Nivea Cellular Luminous 630 Antispot Serum.jpg'
 
 const brands = [
   {
@@ -191,7 +181,8 @@ const scanners = [
     tier: 'Starter',
     tierClass: 'tier-lite',
     glowClass: 'glow-lite',
-    price: 'R 1,499',
+    image: imgScannerLite,
+    price: 'R 5,999',
     desc: 'The perfect entry point. Compact home-use scanner with full hydration, oil balance, and skin type analysis.',
     specs: ['Hydration mapping', 'Oil zone detection', 'Skin type classification', 'App sync via Bluetooth'],
   },
@@ -200,7 +191,8 @@ const scanners = [
     tier: 'Most Popular',
     tierClass: 'tier-pro',
     glowClass: 'glow-pro',
-    price: 'R 3,299',
+    image: imgScannerPro,
+    price: 'R 7,999',
     desc: 'Our flagship device. UV damage detection, aging analysis, and full personalised routine builder — all in one scan.',
     specs: ['All Lite features', 'UV & aging detection', 'Tone & texture analysis', 'Routine builder AI', 'Cloud skin history'],
   },
@@ -209,6 +201,7 @@ const scanners = [
     tier: 'Professional',
     tierClass: 'tier-clinic',
     glowClass: 'glow-clinic',
+    image: imgScannerClinic,
     price: 'Contact Us',
     desc: 'Built for dermatologists and beauty professionals. Multi-client profiles, clinical-grade reporting, and practice dashboard.',
     specs: ['All Pro features', 'Multi-client profiles', 'Clinical PDF reports', 'Practice dashboard', 'Priority API access'],
@@ -216,13 +209,97 @@ const scanners = [
 ]
 
 const ownProducts = [
-  { name: 'FI Daily Moisturiser', type: 'Moisturiser', desc: 'Lightweight, non-comedogenic daily hydration formulated for all skin types identified by Face.IT scans.', skins: ['All skin types'] },
-  { name: 'FI Peptide Serum', type: 'Serum', desc: 'High-potency peptide complex targeting fine lines and loss of firmness. Matched to mature or stressed skin profiles.', skins: ['Mature', 'Dry', 'Combination'] },
-  { name: 'FI SPF 50 Shield', type: 'Sunscreen / SPF', desc: 'Broad-spectrum mineral SPF 50. Invisible finish, no white cast. Ideal for all UV-exposed profiles.', skins: ['All skin types'] },
-  { name: 'FI Gentle Cleanser', type: 'Cleanser', desc: 'pH-balanced gel cleanser that removes impurities without stripping the skin barrier.', skins: ['Sensitive', 'Oily', 'Normal'] },
-  { name: 'FI Balancing Toner', type: 'Toner', desc: 'Alcohol-free toner with niacinamide and witch hazel. Tightens pores and preps skin for serums.', skins: ['Oily', 'Combination'] },
-  { name: 'FI Brightening Eye Cream', type: 'Eye Cream', desc: 'Caffeine and vitamin K complex targeting dark circles and puffiness detected in periorbital scan zones.', skins: ['All skin types'] },
-  { name: 'FI Hydra-Repair Mask', type: 'Face Mask', desc: 'Weekly intensive sheet mask delivering 72-hour hydration. Recommended for dehydrated skin profiles.', skins: ['Dry', 'Dehydrated'] },
+  {
+    name: 'Neutrogena Bright Boost Illuminating Serum',
+    type: 'Serum',
+    image: imgBrightBoostSerum,
+    desc: 'Activates skin\'s renewal process for brighter, more even-toned skin.',
+    skins: ['All skin types'],
+  },
+  {
+    name: 'The Ordinary Multi-Active Delivery Essence',
+    type: 'Essence',
+    image: imgDeliveryEssence,
+    desc: 'Hydrating essence that doubles skincare ingredient penetration after one use.',
+    skins: ['All skin types'],
+  },
+  {
+    name: 'Garnier Pure Active 3-in-1',
+    type: 'Cleanser / Scrub / Mask',
+    image: imgGarnierPureActive,
+    desc: 'Purifies, exfoliates, and mattifies oily skin in a single multitasking formula.',
+    skins: ['Oily', 'Combination'],
+  },
+  {
+    name: 'The Ordinary Glycolic Acid 7% Toner',
+    type: 'Exfoliating Toner',
+    image: imgGlycolicAcid,
+    desc: 'Daily AHA toner that smooths texture, evens tone, and boosts radiance.',
+    skins: ['Normal', 'Oily', 'Combination'],
+  },
+  {
+    name: 'The Ordinary Lactic Acid 10% + HA',
+    type: 'Peeling Solution',
+    image: imgLacticAcid,
+    desc: 'High-strength lactic acid serum for gentle resurfacing and deep hydration.',
+    skins: ['Dry', 'Sensitive', 'Mature'],
+  },
+  {
+    name: 'The Ordinary Niacinamide 5% Body Emulsion',
+    type: 'Body Treatment',
+    image: imgNiacinamide,
+    desc: 'Multi-functional face and body emulsion for visibly brighter, even skin.',
+    skins: ['All skin types'],
+  },
+  {
+    name: 'Nivea Derma Dry Control Anti-Perspirant',
+    type: 'Anti-Perspirant',
+    image: imgNiveaDermaDry,
+    desc: '96h maximum protection with DermaDry technology that protects the skin.',
+    skins: ['All skin types'],
+  },
+  {
+    name: 'Neutrogena Retinol Boost Day Cream SPF 15',
+    type: 'Day Cream',
+    image: imgRetinolBoostDay,
+    desc: 'Anti-age retinol cream with SPF 15 that fights wrinkles and age spots.',
+    skins: ['Mature', 'Normal', 'Dry'],
+  },
+  {
+    name: 'Neutrogena Intense Repair Body Lotion',
+    type: 'Body Lotion',
+    image: imgRepairBodyLotion,
+    desc: 'Cica body lotion with glycerin for instant barrier repair on very dry skin.',
+    skins: ['Dry', 'Very Dry'],
+  },
+  {
+    name: 'The Ordinary Retinol 1% in Squalane',
+    type: 'Retinol Serum',
+    image: imgRetinol,
+    desc: 'Pure 1% retinol in squalane for advanced anti-aging and skin renewal.',
+    skins: ['Mature', 'Combination', 'Normal'],
+  },
+  {
+    name: 'Neutrogena Spot Controlling+ Face Wash',
+    type: 'Face Wash',
+    image: imgSpotControlWash,
+    desc: 'Salicylic acid + PHA cleanser that visibly reduces spot marks in one week.',
+    skins: ['Oily', 'Acne-Prone'],
+  },
+  {
+    name: 'Nivea Cellular Filler Set',
+    type: 'Skincare Set',
+    image: imgCellularFiller,
+    desc: 'Anti-age duo with 20% Hyaluron Elixir to fill wrinkles and restore volume.',
+    skins: ['Mature', 'Dry', 'Normal'],
+  },
+  {
+    name: 'Nivea Luminous 630 Antispot Serum',
+    type: 'Dark Spot Serum',
+    image: imgLuminousSerum,
+    desc: 'Reduces dark spots by up to 50% in 8 weeks. Prevents their reappearance.',
+    skins: ['All skin types', 'All tones'],
+  },
 ]
 </script>
 
@@ -370,8 +447,13 @@ const ownProducts = [
 .glow-pro  { background: radial-gradient(circle, rgba(160,85,53,0.25) 0%, transparent 70%); }
 .glow-clinic { background: radial-gradient(circle, rgba(212,114,106,0.18) 0%, transparent 70%); }
 
-.scanner-placeholder { position: relative; z-index: 1; }
-.scanner-placeholder svg { width: 150px; height: 180px; }
+.scanner-img {
+  position: relative; z-index: 1;
+  max-height: 170px; max-width: 90%;
+  object-fit: contain;
+  transition: transform 0.3s;
+}
+.scanner-card:hover .scanner-img { transform: scale(1.04); }
 
 .scanner-tier-badge {
   position: absolute; top: 14px; left: 14px;
@@ -415,7 +497,7 @@ const ownProducts = [
 }
 .scanner-cta:hover { background: rgba(196,120,74,0.1); border-color: #c4784a; color: #2d1f14; }
 
-/* OWN PRODUCTS */
+/* PRODUCT CARDS */
 .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .product-card {
   background: rgba(255,255,255,0.7); border: 1px solid rgba(45,31,20,0.08);
@@ -424,14 +506,21 @@ const ownProducts = [
 .product-card:hover { border-color: rgba(196,120,74,0.35); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(160,85,53,0.1); }
 
 .product-visual {
-  position: relative; height: 140px; display: flex; align-items: center; justify-content: center;
-  background: rgba(196,120,74,0.04); border-bottom: 1px solid rgba(45,31,20,0.06); overflow: hidden;
+  position: relative; height: 180px; display: flex; align-items: center; justify-content: center;
+  background: #fff; border-bottom: 1px solid rgba(45,31,20,0.06); overflow: hidden;
 }
 .product-glow {
   position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 60%, rgba(196,120,74,0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 60%, rgba(196,120,74,0.08) 0%, transparent 70%);
+  pointer-events: none;
 }
-.product-visual svg { position: relative; z-index: 1; width: 100px; height: 130px; }
+.product-img {
+  position: relative; z-index: 1;
+  max-height: 160px; max-width: 90%;
+  object-fit: contain;
+  transition: transform 0.3s;
+}
+.product-card:hover .product-img { transform: scale(1.04); }
 
 .product-body { padding: 18px 18px 22px; }
 .product-type-badge {
@@ -440,8 +529,8 @@ const ownProducts = [
   padding: 3px 8px; background: rgba(196,120,74,0.08); border: 1px solid rgba(196,120,74,0.2); border-radius: 2px;
 }
 .product-body h4 {
-  font-family: 'Bebas Neue', sans-serif; font-size: 18px;
-  letter-spacing: 0.08em; color: #2d1f14; margin-bottom: 8px; line-height: 1.1;
+  font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+  letter-spacing: 0.06em; color: #2d1f14; margin-bottom: 8px; line-height: 1.2;
 }
 .product-body p {
   font-family: 'DM Mono', monospace; font-size: 10px; line-height: 1.75;
