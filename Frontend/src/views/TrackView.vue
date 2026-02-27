@@ -134,7 +134,7 @@ import axios from 'axios'
 import AppNavbar from '../components/Appnavbar.vue'
 import AppFooter from '../components/Appfooter.vue'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 const route  = useRoute()
 const router = useRouter()
 
@@ -176,7 +176,10 @@ onMounted(async () => {
   }
 
   try {
-    const res = await axios.get(`${API_BASE}/orders/track/${route.params.orderNumber}`)
+    const token = localStorage.getItem('token')
+    const res = await axios.get(`${API_BASE}/orders/track/${route.params.orderNumber}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     order.value = res.data
   } catch (err) {
     if (err.response?.status === 404) notFound.value = true

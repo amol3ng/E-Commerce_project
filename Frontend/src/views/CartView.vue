@@ -97,7 +97,7 @@ import axios from 'axios'
 import AppNavbar from '../components/Appnavbar.vue'
 import AppFooter from '../components/Appfooter.vue'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 
 const user = ref(null)
 const items = ref([])
@@ -111,7 +111,10 @@ const cartTotal = computed(() =>
 async function fetchCart() {
   if (!user.value) { loading.value = false; return }
   try {
-    const res = await axios.get(`${API_BASE}/carts/${user.value.id}`)
+    const token = localStorage.getItem('token')
+    const res = await axios.get(`${API_BASE}/carts/${user.value.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     items.value = res.data
   } catch (err) {
     error.value = 'Could not load cart. Please try again.'
@@ -124,7 +127,12 @@ async function fetchCart() {
 async function changeQty(item, newQty) {
   if (newQty < 1) return
   try {
-    await axios.patch(`${API_BASE}/carts/${user.value.id}/item/${item.id}`, { quantity: newQty })
+    const token = localStorage.getItem('token')
+    await axios.patch(
+      `${API_BASE}/carts/${user.value.id}/item/${item.id}`,
+      { quantity: newQty },
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
     item.quantity = newQty
     item.subtotal = (item.price * newQty).toFixed(2)
     window.dispatchEvent(new Event('user-updated')) // refresh navbar badge
@@ -136,7 +144,10 @@ async function changeQty(item, newQty) {
 
 async function removeItem(item) {
   try {
-    await axios.delete(`${API_BASE}/carts/${user.value.id}/item/${item.id}`)
+    const token = localStorage.getItem('token')
+    await axios.delete(`${API_BASE}/carts/${user.value.id}/item/${item.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     items.value = items.value.filter(i => i.id !== item.id)
     window.dispatchEvent(new Event('user-updated'))
   } catch {

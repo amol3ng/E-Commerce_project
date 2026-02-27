@@ -187,7 +187,7 @@ import axios from 'axios'
 import AppNavbar from '../components/Appnavbar.vue'
 import AppFooter from '../components/Appfooter.vue'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 
 const user     = ref(null)
 const items    = ref([])
@@ -223,7 +223,10 @@ function formatExpiry(e) {
 async function fetchCart() {
   if (!user.value) { loading.value = false; return }
   try {
-    const res = await axios.get(`${API_BASE}/carts/${user.value.id}`)
+    const token = localStorage.getItem('token')
+    const res = await axios.get(`${API_BASE}/carts/${user.value.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     items.value = res.data
   } catch { /* ignore */ }
   finally { loading.value = false }
@@ -241,7 +244,6 @@ async function placeOrder() {
 
   try {
     const payload = {
-      user_id: user.value.id,
       items: items.value.map(i => ({
         product_id: i.product_id,
         quantity:   i.quantity,
@@ -253,7 +255,10 @@ async function placeOrder() {
       total_amount: cartTotal.value,
     }
 
-    const res = await axios.post(`${API_BASE}/orders`, payload)
+    const token = localStorage.getItem('token')
+    const res = await axios.post(`${API_BASE}/orders`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
 
     orderRef.value = res.data.order_number || `ORD-${Date.now()}`
     orderPlaced.value = true

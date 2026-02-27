@@ -222,7 +222,7 @@ import imgDermaDry       from '../assets/Nivea derma dry control.jpg'
 import imgCellularFiller from '../assets/The Cellular Filler Set Nivea.jpg'
 import imgLuminous630    from '../assets/The Nivea Cellular Luminous 630 Antispot Serum.jpg'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 const router = useRouter()
 
 // ── Toast ────────────────────────────────────────────────────────────────────
@@ -247,11 +247,14 @@ async function addToCart(item) {
     return
   }
   const user = JSON.parse(stored)
+  const token = localStorage.getItem('token')
   item.adding = true
   try {
     await axios.post(`${API_BASE}/carts/${user.id}/items`, {
       product_id: item.product_id,
       quantity: 1,
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
     })
     item.added = true
     showToast(`${item.name} added to cart!`)

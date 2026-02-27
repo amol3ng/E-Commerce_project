@@ -8,8 +8,11 @@ import {
   getAllOrders,
   updateOrderStatus,
 } from '../controllers/orderController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
+
+router.use(protect);
 
 // ─── USER ─────────────────────────────────────────────────────────────────────
 router.post('/',                        createOrder);       // place order

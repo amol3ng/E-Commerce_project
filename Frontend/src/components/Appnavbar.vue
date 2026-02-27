@@ -79,7 +79,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 const router = useRouter()
 
 const scrolled = ref(false)
@@ -97,7 +97,10 @@ function loadUser() {
 
 async function fetchCartCount() {
   try {
-    const res = await axios.get(`${API_BASE}/carts/${user.value.id}`)
+    const token = localStorage.getItem('token')
+    const res = await axios.get(`${API_BASE}/carts/${user.value.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     cartCount.value = res.data.reduce((sum, item) => sum + item.quantity, 0)
   } catch {
     cartCount.value = 0

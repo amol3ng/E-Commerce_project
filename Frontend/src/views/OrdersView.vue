@@ -95,7 +95,7 @@ import axios from 'axios'
 import AppNavbar from '../components/Appnavbar.vue'
 import AppFooter from '../components/Appfooter.vue'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 const router = useRouter()
 
 const orders  = ref([])
@@ -144,7 +144,10 @@ onMounted(async () => {
   if (!stored) { router.push('/login'); return }
   const user = JSON.parse(stored)
   try {
-    const res = await axios.get(`${API_BASE}/orders/user/${user.id}`)
+    const token = localStorage.getItem('token')
+    const res = await axios.get(`${API_BASE}/orders/user/${user.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     orders.value = res.data
   } catch { /* ignore */ }
   finally { loading.value = false }

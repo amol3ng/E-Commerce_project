@@ -93,7 +93,7 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
-const API_BASE = 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 const router = useRouter()
 
 const mode = ref('login')
