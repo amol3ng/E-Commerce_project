@@ -13,7 +13,8 @@
         <span class="page-label">Our Product</span>
         <h1 class="page-title">Doesn't matter if<br/>old or younger.<br/><span class="accent">It works for all.</span></h1>
         <p class="page-sub">One scan. Complete skin intelligence. A precision-crafted routine delivered instantly.</p>
-        <router-link to="/login" class="cta-primary">Try It Now</router-link>
+        <!-- Auth-aware: Try It Now -->
+        <a class="cta-primary" href="#" @click.prevent="handleTryItNow">Try It Now</a>
       </div>
     </section>
 
@@ -102,7 +103,8 @@
               </div>
             </div>
           </div>
-          <router-link to="/login" class="cta-primary">Get Started Free</router-link>
+          <!-- Auth-aware: Get Started Free -->
+          <a class="cta-primary" href="#" @click.prevent="handleTryItNow">Get Started Free</a>
         </div>
       </div>
     </section>
@@ -112,7 +114,8 @@
       <div class="cta-strip-inner">
         <h2>One scan changes everything.</h2>
         <p>Start your personalised skin journey today — no guesswork required.</p>
-        <router-link to="/login" class="cta-btn">Decode Your Skin</router-link>
+        <!-- Auth-aware: Decode Your Skin -->
+        <a class="cta-btn" href="#" @click.prevent="handleTryItNow">Decode Your Skin</a>
       </div>
     </section>
 
@@ -121,8 +124,21 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import AppNavbar from '../components/Appnavbar.vue'
 import AppFooter from '../components/Appfooter.vue'
+
+const router = useRouter()
+
+function handleTryItNow() {
+  const isLoggedIn = !!localStorage.getItem('user')
+  if (isLoggedIn) {
+    router.push('/brands#scanners')
+  } else {
+    localStorage.setItem('redirect_after_login', '/brands#scanners')
+    router.push('/login')
+  }
+}
 
 const features = [
   { title: 'Skin Type Detection', desc: 'Precisely identifies your skin type across all categories.', icon: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>' },
@@ -137,7 +153,6 @@ const features = [
 * { box-sizing: border-box; margin: 0; padding: 0; }
 .page { background: #fdf8f3; min-height: 100vh; color: #2d1f14; }
 
-/* HERO */
 .prod-hero {
   min-height: 65vh; display: flex; align-items: center;
   position: relative; overflow: hidden; padding: 140px 5% 80px;
@@ -162,126 +177,59 @@ const features = [
   background-size: 44px 44px;
 }
 .prod-hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
-.page-label {
-  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.22em;
-  text-transform: uppercase; color: #c4784a; display: block; margin-bottom: 20px;
-}
-.page-title {
-  font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 8vw, 100px);
-  line-height: 0.92; letter-spacing: 0.02em; color: #2d1f14; margin-bottom: 24px;
-}
+.page-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #c4784a; display: block; margin-bottom: 20px; }
+.page-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 8vw, 100px); line-height: 0.92; letter-spacing: 0.02em; color: #2d1f14; margin-bottom: 24px; }
 .accent { color: #c4784a; }
-.page-sub {
-  font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.9;
-  color: rgba(45,31,20,0.5); max-width: 480px; margin-bottom: 40px;
-}
+.page-sub { font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.9; color: rgba(45,31,20,0.5); max-width: 480px; margin-bottom: 40px; }
 .cta-primary {
   font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.2em;
   background: #c4784a; color: #fff; text-decoration: none; padding: 15px 40px;
-  border-radius: 4px; display: inline-block; transition: background 0.2s, box-shadow 0.2s;
+  border-radius: 4px; display: inline-block; transition: background 0.2s, box-shadow 0.2s; cursor: pointer;
 }
 .cta-primary:hover { background: #a05535; box-shadow: 0 0 30px rgba(196,120,74,0.4); }
 
-/* SECTIONS */
 .section { padding: 100px 5%; }
-.section.alt {
-  background: rgba(196,120,74,0.04);
-  border-top: 1px solid rgba(196,120,74,0.12);
-  border-bottom: 1px solid rgba(196,120,74,0.12);
-}
+.section.alt { background: rgba(196,120,74,0.04); border-top: 1px solid rgba(196,120,74,0.12); border-bottom: 1px solid rgba(196,120,74,0.12); }
 .section-inner { max-width: 1200px; margin: 0 auto; }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-.section-label {
-  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em;
-  text-transform: uppercase; color: #c4784a; display: block; margin-bottom: 16px;
-}
+.section-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #c4784a; display: block; margin-bottom: 16px; }
 .section-label.center { text-align: center; }
-.center-heading {
-  font-family: 'Playfair Display', serif; font-size: clamp(28px, 3vw, 40px);
-  color: #2d1f14; text-align: center; margin-bottom: 60px; line-height: 1.3;
-}
+.center-heading { font-family: 'Playfair Display', serif; font-size: clamp(28px, 3vw, 40px); color: #2d1f14; text-align: center; margin-bottom: 60px; line-height: 1.3; }
 
-/* Steps */
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
 .step { display: flex; flex-direction: column; }
-.step-num {
-  font-family: 'Bebas Neue', sans-serif; font-size: 52px; letter-spacing: 0.05em;
-  color: rgba(196,120,74,0.2); line-height: 1; margin-bottom: 12px;
-}
+.step-num { font-family: 'Bebas Neue', sans-serif; font-size: 52px; letter-spacing: 0.05em; color: rgba(196,120,74,0.2); line-height: 1; margin-bottom: 12px; }
 .step-line { width: 40px; height: 2px; background: #c4784a; margin-bottom: 20px; }
-.step h3 {
-  font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.1em;
-  color: #2d1f14; margin-bottom: 12px;
-}
-.step p {
-  font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.8;
-  color: rgba(45,31,20,0.5);
-}
+.step h3 { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.1em; color: #2d1f14; margin-bottom: 12px; }
+.step p { font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.8; color: rgba(45,31,20,0.5); }
 
-/* Product visual */
 .product-visual { display: flex; align-items: center; justify-content: center; }
-.device-frame {
-  position: relative; width: 300px; height: 380px;
-  display: flex; align-items: center; justify-content: center;
-}
-.device-glow {
-  position: absolute; inset: -40px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(196,120,74,0.1) 0%, transparent 70%);
-  filter: blur(20px);
-}
+.device-frame { position: relative; width: 300px; height: 380px; display: flex; align-items: center; justify-content: center; }
+.device-glow { position: absolute; inset: -40px; border-radius: 50%; background: radial-gradient(circle, rgba(196,120,74,0.1) 0%, transparent 70%); filter: blur(20px); }
 .device-frame svg { position: relative; z-index: 1; width: 300px; height: 380px; }
 
-.dtag {
-  position: absolute; background: rgba(255,252,248,0.96); border: 1px solid rgba(196,120,74,0.2);
-  border-radius: 4px; padding: 10px 14px; display: flex; align-items: center; gap: 10px;
-  box-shadow: 0 8px 24px rgba(160,85,53,0.12); z-index: 2;
-  animation: floatY 3s ease-in-out infinite;
-}
+.dtag { position: absolute; background: rgba(255,252,248,0.96); border: 1px solid rgba(196,120,74,0.2); border-radius: 4px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(160,85,53,0.12); z-index: 2; animation: floatY 3s ease-in-out infinite; }
 .dtag-1 { top: 60px; right: -30px; }
 .dtag-2 { bottom: 80px; right: -30px; animation-delay: 1s; }
 .dtag-dot { width: 8px; height: 8px; background: #c4784a; border-radius: 50%; box-shadow: 0 0 6px rgba(196,120,74,0.6); flex-shrink: 0; }
 .dtag-dot.green { background: #5aaa40; box-shadow: 0 0 6px rgba(90,170,64,0.5); }
-.dtag-label {
-  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em;
-  text-transform: uppercase; color: rgba(45,31,20,0.4); margin-bottom: 2px;
-}
+.dtag-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(45,31,20,0.4); margin-bottom: 2px; }
 .dtag-val { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.08em; color: #2d1f14; }
 @keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 
-/* Features */
-.features-list h2 {
-  font-family: 'Playfair Display', serif; font-size: clamp(26px, 3vw, 38px);
-  color: #2d1f14; line-height: 1.3; margin-bottom: 32px;
-}
+.features-list h2 { font-family: 'Playfair Display', serif; font-size: clamp(26px, 3vw, 38px); color: #2d1f14; line-height: 1.3; margin-bottom: 32px; }
 .feature-items { display: flex; flex-direction: column; gap: 20px; margin-bottom: 36px; }
 .fitem { display: flex; gap: 16px; align-items: flex-start; }
-.fitem-icon {
-  width: 40px; height: 40px; background: rgba(196,120,74,0.1); border: 1px solid rgba(196,120,74,0.2);
-  border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
+.fitem-icon { width: 40px; height: 40px; background: rgba(196,120,74,0.1); border: 1px solid rgba(196,120,74,0.2); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .fitem-icon svg { width: 18px; height: 18px; color: #c4784a; }
-.fitem h4 {
-  font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: #2d1f14; margin-bottom: 4px;
-}
+.fitem h4 { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #2d1f14; margin-bottom: 4px; }
 .fitem p { font-family: 'DM Mono', monospace; font-size: 11px; line-height: 1.7; color: rgba(45,31,20,0.5); }
 
-/* CTA strip */
 .cta-strip { padding: 100px 5%; text-align: center; border-top: 1px solid rgba(196,120,74,0.15); }
 .cta-strip-inner { max-width: 600px; margin: 0 auto; }
-.cta-strip h2 {
-  font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 6vw, 72px);
-  letter-spacing: 0.05em; color: #2d1f14; margin-bottom: 16px;
-}
-.cta-strip p {
-  font-family: 'DM Mono', monospace; font-size: 12px; color: rgba(45,31,20,0.5);
-  line-height: 1.8; margin-bottom: 36px;
-}
-.cta-btn {
-  font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.2em;
-  background: #c4784a; color: #fff; text-decoration: none; padding: 15px 40px;
-  border-radius: 4px; display: inline-block; transition: all 0.2s;
-}
+.cta-strip h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 6vw, 72px); letter-spacing: 0.05em; color: #2d1f14; margin-bottom: 16px; }
+.cta-strip p { font-family: 'DM Mono', monospace; font-size: 12px; color: rgba(45,31,20,0.5); line-height: 1.8; margin-bottom: 36px; }
+.cta-btn { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.2em; background: #c4784a; color: #fff; text-decoration: none; padding: 15px 40px; border-radius: 4px; display: inline-block; transition: all 0.2s; cursor: pointer; }
 .cta-btn:hover { background: #a05535; box-shadow: 0 0 30px rgba(196,120,74,0.4); }
 
 @media (max-width: 900px) {

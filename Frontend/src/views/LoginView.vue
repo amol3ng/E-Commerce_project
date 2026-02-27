@@ -129,10 +129,15 @@ async function handleSubmit() {
       })
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('user', JSON.stringify(res.data.user))
+
       // Notify navbar in the same tab
       window.dispatchEvent(new Event('user-updated'))
-      // Redirect home
-      router.push('/')
+
+      // ── Redirect back to saved destination, or home ──
+      const redirectTo = localStorage.getItem('redirect_after_login')
+      localStorage.removeItem('redirect_after_login')
+      router.push(redirectTo || '/')
+
     } else {
       await axios.post(`${API_BASE}/users`, {
         full_name: form.full_name,
@@ -166,7 +171,6 @@ async function handleSubmit() {
   padding: 40px 20px;
 }
 
-/* Decorative petals */
 .bg-petal {
   position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.35;
 }
@@ -211,7 +215,6 @@ async function handleSubmit() {
 
 .auth-tagline { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: rgba(45,31,20,0.45); margin-bottom: 32px; font-style: italic; }
 
-/* Tabs */
 .tab-bar {
   display: grid; grid-template-columns: 1fr 1fr; position: relative;
   background: rgba(45,31,20,0.04); border: 1px solid rgba(196,120,74,0.15);
@@ -229,7 +232,6 @@ async function handleSubmit() {
   transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); z-index: 0;
 }
 
-/* Fields */
 .fields { display: flex; flex-direction: column; gap: 20px; }
 .field-group { display: flex; flex-direction: column; gap: 8px; }
 .field-group label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(45,31,20,0.4); }
@@ -252,7 +254,6 @@ async function handleSubmit() {
 .eye-btn:hover { color: rgba(45,31,20,0.6); }
 .eye-btn svg { width: 15px; height: 15px; }
 
-/* Phone */
 .phone-wrap {
   display: flex; align-items: center; background: rgba(45,31,20,0.03);
   border: 1px solid rgba(45,31,20,0.12); border-radius: 4px; overflow: hidden;
@@ -269,12 +270,10 @@ async function handleSubmit() {
 .phone-input:focus { outline: none; }
 .field-hint { font-size: 9px; color: rgba(45,31,20,0.2); letter-spacing: 0.06em; }
 
-/* Message */
 .msg { margin-top: 16px; padding: 10px 14px; border-radius: 4px; font-size: 11px; letter-spacing: 0.04em; border-left: 2px solid; }
 .msg.error { background: rgba(200,50,50,0.06); border-color: #c83232; color: #c83232; }
 .msg.success { background: rgba(100,170,80,0.08); border-color: #5aaa40; color: #5aaa40; }
 
-/* Submit */
 .submit-btn {
   margin-top: 24px; width: 100%; background: #c4784a; border: none; border-radius: 4px;
   color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 16px;
