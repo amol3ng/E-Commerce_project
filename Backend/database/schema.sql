@@ -248,3 +248,18 @@ CREATE TABLE IF NOT EXISTS payments (
 
 CREATE INDEX idx_payments_order ON payments(order_id);
 CREATE INDEX idx_payments_status ON payments(status);
+
+SHOW INDEX FROM users;
+DROP INDEX idx_users_role ON users;
+ALTER TABLE users ADD INDEX idx_users_role (role);
+
+ALTER TABLE users AUTO_INCREMENT = 4;
+
+SELECT id, full_name, email FROM users;
+
+SELECT * FROM users;
+
+DESCRIBE orders;
+DESCRIBE order_items;
+
+DESCRIBE products;

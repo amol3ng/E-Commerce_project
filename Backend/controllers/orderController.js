@@ -1,18 +1,16 @@
+// Backend/controllers/orderController.js
 import pool from '../config/db.js';
+import { sendOrderConfirmation } from '../config/emailService.js';
 
-// POST /api/orders  — place order from cart
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/orders  — place order from checkout
+// ─────────────────────────────────────────────────────────────────────────────
 export const createOrder = async (req, res) => {
-  const {
-    user_id,
-    items,
-    shipping_address,
-    billing_address,
-    payment_method
-  } = req.body;
+  const { user_id, items, shipping_address, billing_address, payment_method } = req.body;
 
   if (!user_id || !items || !shipping_address || !payment_method) {
     return res.status(400).json({
-      message: "user_id, items, shipping_address and payment_method are required"
+      message: 'user_id, items, shipping_address and payment_method are required',
     });
   }
 
@@ -21,48 +19,42 @@ export const createOrder = async (req, res) => {
   try {
     await connection.beginTransaction();
 
-    // ✅ Check user exists
+    // ── Check user exists ─────────────────────────────────────────────────────
     const [[user]] = await connection.query(
-      "SELECT id FROM users WHERE id = ?",
+      'SELECT id, full_name, email FROM users WHERE id = ?',
       [user_id]
     );
-
     if (!user) {
       await connection.rollback();
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     let total_amount = 0;
 
-    // ✅ First loop: validate + calculate total
+    // ── First pass: validate stock + calculate total ──────────────────────────
     for (const item of items) {
       const [[product]] = await connection.query(
-        "SELECT id, name, price, stock_qty FROM products WHERE id = ?",
+        'SELECT id, name, price, stock_qty FROM products WHERE id = ?',
         [item.product_id]
       );
-
       if (!product) {
         await connection.rollback();
         return res.status(404).json({ message: `Product ${item.product_id} not found` });
       }
-
       if (product.stock_qty < item.quantity) {
         await connection.rollback();
-        return res.status(400).json({
-          message: `Insufficient stock for product ${item.product_id}`
-        });
+        return res.status(400).json({ message: `Insufficient stock for "${product.name}"` });
       }
-
       total_amount += product.price * item.quantity;
     }
 
-    // ✅ Generate order number
+    // ── Generate order number ─────────────────────────────────────────────────
     const order_number = `ORD-${Date.now()}`;
 
-    // ✅ Insert order
+    // ── Insert order ──────────────────────────────────────────────────────────
     const [orderResult] = await connection.query(`
       INSERT INTO orders
-      (user_id, order_number, total_amount, shipping_address, billing_address, payment_method)
+        (user_id, order_number, total_amount, shipping_address, billing_address, payment_method)
       VALUES (?, ?, ?, ?, ?, ?)
     `, [
       user_id,
@@ -70,47 +62,63 @@ export const createOrder = async (req, res) => {
       total_amount,
       JSON.stringify(shipping_address),
       billing_address ? JSON.stringify(billing_address) : null,
-      payment_method
+      payment_method,
     ]);
 
     const order_id = orderResult.insertId;
+    const orderItemsForEmail = [];
 
-    // ✅ Second loop: insert items + update stock
+    // ── Second pass: insert items + decrement stock ───────────────────────────
     for (const item of items) {
       const [[product]] = await connection.query(
-        "SELECT id, name, price FROM products WHERE id = ?",
+        'SELECT id, name, price FROM products WHERE id = ?',
         [item.product_id]
       );
 
       await connection.query(`
-        INSERT INTO order_items 
-        (order_id, product_id, product_name, quantity, unit_price)
+        INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price)
         VALUES (?, ?, ?, ?, ?)
-      `, [
-        order_id,
-        product.id,
-        product.name,      // ✅ FIXED
-        item.quantity,
-        product.price      // maps to unit_price
-      ]);
+      `, [order_id, product.id, product.name, item.quantity, product.price]);
 
-      await connection.query(`
-        UPDATE products
-        SET stock_qty = stock_qty - ?
-        WHERE id = ?
-      `, [
-        item.quantity,
-        product.id
-      ]);
+      await connection.query(
+        'UPDATE products SET stock_qty = stock_qty - ? WHERE id = ?',
+        [item.quantity, product.id]
+      );
+
+      orderItemsForEmail.push({
+        product_name: product.name,
+        quantity: item.quantity,
+        unit_price: product.price,
+      });
+    }
+
+    // ── Clear the user's cart from the database ───────────────────────────────
+    const [[cart]] = await connection.query(
+      'SELECT id FROM carts WHERE user_id = ?',
+      [user_id]
+    );
+    if (cart) {
+      await connection.query('DELETE FROM cart_items WHERE cart_id = ?', [cart.id]);
     }
 
     await connection.commit();
 
+    // ── Send confirmation email (non-blocking — don't fail the order if email fails) ──
+    sendOrderConfirmation({
+      to: user.email,
+      full_name: user.full_name,
+      order_number,
+      items: orderItemsForEmail,
+      total_amount,
+      shipping_address,
+      payment_method,
+    }).catch(err => console.error('Email send failed:', err.message));
+
     res.status(201).json({
-      message: "Order created successfully",
+      message: 'Order created successfully',
       order_id,
       order_number,
-      total_amount
+      total_amount,
     });
 
   } catch (err) {
@@ -120,17 +128,35 @@ export const createOrder = async (req, res) => {
     connection.release();
   }
 };
-// GET /api/orders/user/:userId
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/orders/user/:userId  — order history for logged-in user
+// ─────────────────────────────────────────────────────────────────────────────
 export const getUserOrders = async (req, res) => {
   const { userId } = req.params;
   try {
     const [orders] = await pool.query(`
-      SELECT o.id, o.order_number, o.order_status, o.payment_status,
-             o.total_amount, o.payment_method, o.created_at
+      SELECT
+        o.id, o.order_number, o.order_status, o.payment_status,
+        o.total_amount, o.payment_method, o.tracking_number, o.created_at,
+        o.shipping_address
       FROM orders o
       WHERE o.user_id = ?
       ORDER BY o.created_at DESC
     `, [userId]);
+
+    // Attach items to each order
+    for (const order of orders) {
+      const [items] = await pool.query(
+        'SELECT product_name, quantity, unit_price, subtotal FROM order_items WHERE order_id = ?',
+        [order.id]
+      );
+      order.items = items;
+      // Parse shipping_address if it's a string
+      if (typeof order.shipping_address === 'string') {
+        try { order.shipping_address = JSON.parse(order.shipping_address); } catch {}
+      }
+    }
 
     res.json(orders);
   } catch (err) {
@@ -138,18 +164,33 @@ export const getUserOrders = async (req, res) => {
   }
 };
 
-// GET /api/orders/:id
-export const getOrderById = async (req, res) => {
-  const { id } = req.params;
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/orders/track/:orderNumber  — public order tracking by order number
+// ─────────────────────────────────────────────────────────────────────────────
+export const trackOrder = async (req, res) => {
+  const { orderNumber } = req.params;
   try {
-    const [[order]] = await pool.query(
-      'SELECT * FROM orders WHERE id = ? OR order_uuid = ?', [id, id]
-    );
-    if (!order) return res.status(404).json({ message: 'Order not found' });
+    const [[order]] = await pool.query(`
+      SELECT
+        o.id, o.order_number, o.order_status, o.payment_status,
+        o.total_amount, o.payment_method, o.tracking_number,
+        o.created_at, o.updated_at, o.shipping_address
+      FROM orders o
+      WHERE o.order_number = ?
+    `, [orderNumber]);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
 
     const [items] = await pool.query(
-      'SELECT * FROM order_items WHERE order_id = ?', [order.id]
+      'SELECT product_name, quantity, unit_price, subtotal FROM order_items WHERE order_id = ?',
+      [order.id]
     );
+
+    if (typeof order.shipping_address === 'string') {
+      try { order.shipping_address = JSON.parse(order.shipping_address); } catch {}
+    }
 
     res.json({ ...order, items });
   } catch (err) {
@@ -157,9 +198,32 @@ export const getOrderById = async (req, res) => {
   }
 };
 
-// ─── ADMIN ───────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/orders/:id  — single order by id (kept for compatibility)
+// ─────────────────────────────────────────────────────────────────────────────
+export const getOrderById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [[order]] = await pool.query(
+      'SELECT * FROM orders WHERE id = ? OR order_uuid = ?',
+      [id, id]
+    );
+    if (!order) return res.status(404).json({ message: 'Order not found' });
 
-// GET /api/orders  (admin — all orders)
+    const [items] = await pool.query(
+      'SELECT * FROM order_items WHERE order_id = ?',
+      [order.id]
+    );
+    res.json({ ...order, items });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADMIN endpoints
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const getAllOrders = async (req, res) => {
   const { status, payment_status, limit = 50, offset = 0 } = req.query;
   try {
@@ -182,13 +246,12 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
-// PATCH /api/orders/:id/status  (admin)
 export const updateOrderStatus = async (req, res) => {
   const { id } = req.params;
   const { order_status, payment_status, tracking_number } = req.body;
 
-  const allowed_order   = ['pending','processing','shipped','delivered','cancelled','refunded'];
-  const allowed_payment = ['pending','paid','failed','refunded'];
+  const allowed_order   = ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'];
+  const allowed_payment = ['pending', 'paid', 'failed', 'refunded'];
 
   const sets = []; const params = [];
   if (order_status   && allowed_order.includes(order_status))     { sets.push('order_status = ?');   params.push(order_status); }
@@ -199,7 +262,10 @@ export const updateOrderStatus = async (req, res) => {
 
   params.push(id);
   try {
-    const [result] = await pool.query(`UPDATE orders SET ${sets.join(', ')} WHERE id = ?`, params);
+    const [result] = await pool.query(
+      `UPDATE orders SET ${sets.join(', ')} WHERE id = ?`,
+      params
+    );
     if (result.affectedRows === 0) return res.status(404).json({ message: 'Order not found' });
     res.json({ message: 'Order updated' });
   } catch (err) {

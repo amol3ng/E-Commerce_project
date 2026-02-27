@@ -1,7 +1,9 @@
+// Backend/routes/orderRoutes.js
 import express from 'express';
 import {
   createOrder,
   getUserOrders,
+  trackOrder,
   getOrderById,
   getAllOrders,
   updateOrderStatus,
@@ -9,25 +11,14 @@ import {
 
 const router = express.Router();
 
-// ─── PUBLIC / USER ────────────────────────────
-router.post('/',                  createOrder);        // place order from checkout
-router.get('/user/:userId',       getUserOrders);      // order history
-router.get('/:id',                getOrderById);       // single order
+// ─── USER ─────────────────────────────────────────────────────────────────────
+router.post('/',                        createOrder);       // place order
+router.get('/user/:userId',             getUserOrders);     // order history
+router.get('/track/:orderNumber',       trackOrder);        // track by order number (login required enforced on frontend)
+router.get('/:id',                      getOrderById);      // single order by id
 
-// ─── ADMIN ────────────────────────────────────
-router.get('/',                   getAllOrders);        // all orders (admin)
-router.patch('/:id/status',       updateOrderStatus);  // update order/payment status (admin)
+// ─── ADMIN ────────────────────────────────────────────────────────────────────
+router.get('/',                         getAllOrders);       // all orders
+router.patch('/:id/status',             updateOrderStatus); // update status
 
 export default router;
-
-/*
-─── MOUNT IN app.js ───────────────────────────────────────
-import orderRoutes   from './routes/orderRoutes.js';
-import productRoutes from './routes/productRoutes.js';
-import cartRoutes    from './routes/cartRoutes.js';
-
-app.use('/api/orders',   orderRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/carts',    cartRoutes);
-───────────────────────────────────────────────────────────
-*/
