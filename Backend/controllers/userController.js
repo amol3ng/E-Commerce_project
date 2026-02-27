@@ -1,6 +1,7 @@
 import pool from '../config/db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { sendRegistrationConfirmation } from '../config/emailService.js';
 
 const signToken = (user) =>
   jwt.sign(
@@ -31,6 +32,13 @@ export const createUser = async (req, res) => {
 
     const user = rows[0];
     const token = signToken(user);
+
+    sendRegistrationConfirmation({
+      to: user.email,
+      full_name: user.full_name,
+    }).catch((err) => {
+      console.error('Registration email failed:', err.message);
+    });
 
     return res.status(201).json({
       message: 'User created successfully',

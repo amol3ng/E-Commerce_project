@@ -10,6 +10,53 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const canSendEmail = () => Boolean(process.env.MAIL_USER && process.env.MAIL_PASS);
+
+export async function sendRegistrationConfirmation({ to, full_name }) {
+  if (!canSendEmail()) {
+    return;
+  }
+
+  const firstName = full_name?.split(' ')[0] || 'there';
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
+<body style="margin:0;padding:0;background:#fdf8f3;font-family:'Courier New',monospace;">
+  <div style="max-width:600px;margin:40px auto;background:#fff;border:1px solid rgba(196,120,74,0.2);border-radius:8px;overflow:hidden;">
+    <div style="background:#c4784a;padding:36px 40px;text-align:center;">
+      <div style="font-size:22px;letter-spacing:0.1em;margin-bottom:6px;">FACE.IT</div>
+      <div style="color:rgba(255,255,255,0.85);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;">Welcome</div>
+    </div>
+    <div style="padding:40px;">
+      <p style="font-size:15px;color:#2d1f14;margin:0 0 8px;">Hi <strong>${firstName}</strong>,</p>
+      <p style="font-size:13px;color:rgba(45,31,20,0.6);line-height:1.8;margin:0 0 24px;">
+        Your FACE.IT account was created successfully.
+      </p>
+      <p style="font-size:13px;color:rgba(45,31,20,0.6);line-height:1.8;margin:0 0 32px;">
+        You can now sign in and start your skin journey.
+      </p>
+      <div style="text-align:center;margin-bottom:20px;">
+        <a href="${frontendUrl}/login" style="display:inline-block;background:#c4784a;color:#fff;text-decoration:none;padding:13px 30px;border-radius:4px;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;">
+          Open FACE.IT
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  await transporter.sendMail({
+    from: `"Face.IT" <${process.env.MAIL_USER}>`,
+    to,
+    subject: 'FACE.IT account created',
+    html,
+  });
+}
+
 // ── Order confirmation email ──────────────────────────────────────────────────
 export async function sendOrderConfirmation({ to, full_name, order_number, items, total_amount, shipping_address, payment_method }) {
   const firstName = full_name?.split(' ')[0] || 'there';
